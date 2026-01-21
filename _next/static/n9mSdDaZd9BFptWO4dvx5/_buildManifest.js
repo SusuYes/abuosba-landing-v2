@@ -1,7 +1,12 @@
 self.__BUILD_MANIFEST = {
   "__rewrites": {
     "afterFiles": [],
-    "beforeFiles": [],
+    "beforeFiles": [
+      {
+        "source": "/abuosba-landing-v2//_next/:path+",
+        "destination": "/abuosba-landing-v2/_next/:path+"
+      }
+    ],
     "fallback": []
   },
   "sortedPages": [
