@@ -25,7 +25,7 @@ export function Footer() {
           <div className="flex items-center gap-4">
             <MagneticWrapper strength={0.2}>
               <a
-                href="https://www.linkedin.com/in/abuosba"
+                href={t.social.linkedinUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full glass-card-subtle flex items-center justify-center text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"

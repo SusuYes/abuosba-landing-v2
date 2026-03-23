@@ -5,6 +5,9 @@ export const en = {
     contact: "Say Hi",
     linkedin: "LinkedIn",
   },
+  social: {
+    linkedinUrl: "https://www.linkedin.com/in/abuosba",
+  },
   hero: {
     brand: "Abuosba",
     headlineA: "Hey, I'm Suhail.",
