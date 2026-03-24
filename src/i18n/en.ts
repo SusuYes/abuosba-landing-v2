@@ -3,10 +3,6 @@ export const en = {
     about: "About",
     experience: "What I Do",
     contact: "Say Hi",
-    linkedin: "LinkedIn",
-  },
-  social: {
-    linkedinUrl: "https://www.linkedin.com/in/abuosba",
   },
   hero: {
     brand: "Abuosba",
