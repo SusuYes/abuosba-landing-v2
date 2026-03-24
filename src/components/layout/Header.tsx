@@ -80,7 +80,7 @@ export function Header() {
           {/* LinkedIn - desktop only */}
           <MagneticWrapper strength={0.15} className="hidden lg:block">
             <a
-              href="https://www.linkedin.com/in/abuosba"
+              href={t.social.linkedinUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2 text-sm text-[var(--muted)] hover:text-[var(--foreground)] transition-colors rounded-full hover:bg-[var(--border)] flex items-center gap-2"

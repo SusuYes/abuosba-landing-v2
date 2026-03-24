@@ -185,14 +185,24 @@ export function ParticleField({ mouseX = 0, mouseY = 0 }: ParticleFieldProps) {
 
     updateColors();
 
-    // Listen for theme changes
-    const observer = new MutationObserver(updateColors);
+    // Listen for theme changes, throttled via requestAnimationFrame
+    let rafId: number | null = null;
+    const observer = new MutationObserver(() => {
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(() => {
+        updateColors();
+        rafId = null;
+      });
+    });
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["class"],
     });
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
   }, [count]);
 
   // Animation loop with physics

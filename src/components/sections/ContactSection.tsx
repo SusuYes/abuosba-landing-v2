@@ -36,7 +36,7 @@ export function ContactSection() {
       const data = await res.json();
       if (data.success) {
         setFormState("success");
-        (e.target as HTMLFormElement).reset();
+        e.currentTarget.reset();
       } else {
         setFormState("error");
       }
