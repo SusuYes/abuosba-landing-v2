@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { MagneticWrapper } from "@/components/ui/MagneticWrapper";
+import { GlitchText } from "@/components/ui/GlitchText";
 import { dict } from "@/lib/i18n";
 
 export function Footer() {
@@ -10,16 +11,28 @@ export function Footer() {
 
   return (
     <footer className="relative border-t border-[var(--border)] mt-20">
+      {/* Subtle top glow */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[var(--accent)]/20 to-transparent" />
+
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Copyright */}
-          <motion.p
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-sm text-[var(--muted)]"
+            className="flex items-center gap-3"
           >
-            {t.footer.copyright.replace("{year}", String(year))}
-          </motion.p>
+            <p className="text-sm text-[var(--muted)] font-mono">
+              {t.footer.copyright.replace("{year}", String(year))}
+            </p>
+            <motion.span
+              animate={{ opacity: [0.3, 0.6, 0.3] }}
+              transition={{ duration: 3, repeat: Infinity }}
+              className="text-[10px] font-mono text-[var(--accent)]/40"
+            >
+              // END_TRANSMISSION
+            </motion.span>
+          </motion.div>
 
           {/* Links */}
           <div className="flex items-center gap-4">
@@ -28,7 +41,7 @@ export function Footer() {
                 href={t.social.linkedinUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full glass-card-subtle flex items-center justify-center text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+                className="w-10 h-10 rounded-full glass-card-subtle flex items-center justify-center text-[var(--muted)] hover:text-[var(--accent)] hover:border-[var(--accent)]/30 transition-all"
                 aria-label="LinkedIn"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -40,7 +53,7 @@ export function Footer() {
             <MagneticWrapper strength={0.2}>
               <a
                 href={`mailto:${t.contact.email}`}
-                className="w-10 h-10 rounded-full glass-card-subtle flex items-center justify-center text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+                className="w-10 h-10 rounded-full glass-card-subtle flex items-center justify-center text-[var(--muted)] hover:text-[var(--accent)] hover:border-[var(--accent)]/30 transition-all"
                 aria-label="Email"
               >
                 <svg

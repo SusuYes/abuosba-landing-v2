@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ThemeToggle } from "@/components/toggles/ThemeToggle";
 import { MagneticWrapper } from "@/components/ui/MagneticWrapper";
+import { GlitchText } from "@/components/ui/GlitchText";
 import { dict } from "@/lib/i18n";
 
 const navLinks = [
@@ -14,6 +15,7 @@ const navLinks = [
 
 export function Header() {
   const [mounted, setMounted] = useState(false);
+  const [hovered, setHovered] = useState<string | null>(null);
   const { scrollY } = useScroll();
 
   const headerBg = useTransform(
@@ -51,13 +53,26 @@ export function Header() {
       }}
     >
       <nav className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-        {/* Logo */}
+        {/* Logo with glitch on hover */}
         <MagneticWrapper strength={0.1}>
           <a
             href="#"
-            className="font-mono text-lg font-semibold tracking-tight hover:text-[var(--accent)] transition-colors"
+            className="font-mono text-lg font-semibold tracking-tight hover:text-[var(--accent)] transition-colors group"
+            onMouseEnter={() => setHovered("logo")}
+            onMouseLeave={() => setHovered(null)}
           >
-            {t.hero.brand.toLowerCase()}<span className="text-[var(--accent)]">.com</span>
+            {hovered === "logo" ? (
+              <GlitchText
+                text={`${t.hero.brand.toLowerCase()}.com`}
+                scrambleDuration={600}
+                className="text-[var(--accent)]"
+              />
+            ) : (
+              <>
+                {t.hero.brand.toLowerCase()}
+                <span className="text-[var(--accent)]">.com</span>
+              </>
+            )}
           </a>
         </MagneticWrapper>
 
@@ -67,9 +82,18 @@ export function Header() {
             <MagneticWrapper key={link.key} strength={0.15}>
               <a
                 href={link.href}
-                className="px-4 py-2 text-sm text-[var(--muted)] hover:text-[var(--foreground)] transition-colors rounded-full hover:bg-[var(--border)]"
+                className="px-4 py-2 text-sm font-mono text-[var(--muted)] hover:text-[var(--foreground)] transition-colors rounded-full hover:bg-[var(--border)] relative group"
+                onMouseEnter={() => setHovered(link.key)}
+                onMouseLeave={() => setHovered(null)}
               >
-                {t.nav[link.key as keyof typeof t.nav]}
+                {hovered === link.key ? (
+                  <GlitchText
+                    text={t.nav[link.key as keyof typeof t.nav]}
+                    scrambleDuration={400}
+                  />
+                ) : (
+                  t.nav[link.key as keyof typeof t.nav]
+                )}
               </a>
             </MagneticWrapper>
           ))}
@@ -83,7 +107,7 @@ export function Header() {
               href={t.social.linkedinUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2 text-sm text-[var(--muted)] hover:text-[var(--foreground)] transition-colors rounded-full hover:bg-[var(--border)] flex items-center gap-2"
+              className="px-4 py-2 text-sm font-mono text-[var(--muted)] hover:text-[var(--foreground)] transition-colors rounded-full hover:bg-[var(--border)] flex items-center gap-2"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />

@@ -58,21 +58,6 @@ body {
   background: color-mix(in oklab, var(--accent) 30%, transparent);
 }
 
-/* Canvas container */
-.canvas-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.canvas-container canvas {
-  pointer-events: auto;
-}
-
 /* Content layers */
 .content-layer {
   position: relative;
@@ -132,7 +117,7 @@ body {
 }
 
 .glow-hover {
-  transition: box-shadow 0.3s ease;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .glow-hover:hover {
@@ -199,17 +184,42 @@ body {
   transform: translateY(-2px);
 }
 
-/* Scroll reveal */
-.reveal {
-  opacity: 0;
-  transform: translateY(24px);
+/* Glitch button variant */
+.btn-glitch {
+  position: relative;
+  overflow: hidden;
 }
 
-.reveal-visible {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-              transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+.btn-glitch::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(var(--accent-rgb), 0.1),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.btn-glitch:hover::after {
+  left: 100%;
+}
+
+/* Animated border flow for cards */
+@keyframes border-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-border-flow {
+  background-size: 200% 200%;
+  animation: border-flow 3s linear infinite;
 }
 
 /* Section spacing */
@@ -242,6 +252,32 @@ html.lenis, html.lenis body {
 
 .lenis.lenis-smooth iframe {
   pointer-events: none;
+}
+
+/* Chromatic aberration on hover */
+.chromatic-hover:hover {
+  text-shadow:
+    -1px 0 rgba(var(--accent-rgb), 0.5),
+    1px 0 rgba(var(--accent-2-rgb), 0.5);
+}
+
+/* Glitch flicker */
+@keyframes glitch-flicker {
+  0%, 100% { opacity: 1; }
+  33% { opacity: 0.8; }
+  66% { opacity: 1; }
+  77% { opacity: 0.6; }
+  90% { opacity: 1; }
+}
+
+.glitch-flicker {
+  animation: glitch-flicker 4s ease-in-out infinite;
+}
+
+/* Data stream text effect */
+@keyframes data-scroll {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
 }
 
 /* Reduced motion */
