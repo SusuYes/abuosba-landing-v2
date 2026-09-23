@@ -24,15 +24,17 @@ export function ContactSection() {
       return;
     }
 
+    // Capture the form now: React clears e.currentTarget once the handler yields at the await
+    const form = e.currentTarget;
     setFormState("sending");
     try {
-      const formData = new FormData(e.currentTarget);
+      const formData = new FormData(form);
       formData.append("access_key", accessKey);
       const res = await fetch("https://api.web3forms.com/submit", { method: "POST", body: formData });
       const data = await res.json();
       if (data.success) {
         setFormState("success");
-        e.currentTarget.reset();
+        form.reset();
       } else {
         setFormState("error");
       }

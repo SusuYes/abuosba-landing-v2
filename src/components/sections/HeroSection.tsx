@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { DecodeText } from "@/components/ui/GlitchText";
 import { MagneticWrapper } from "@/components/ui/MagneticWrapper";
@@ -25,7 +25,6 @@ const fadeUp = {
 };
 
 export function HeroSection() {
-  const [mounted, setMounted] = useState(false);
   const t = dict();
 
   const mouseX = useMotionValue(0);
@@ -35,8 +34,6 @@ export function HeroSection() {
   const parallaxX = useTransform(springX, [-0.5, 0.5], [-15, 15]);
   const parallaxY = useTransform(springY, [-0.5, 0.5], [-10, 10]);
 
-  useEffect(() => { setMounted(true); }, []);
-
   useEffect(() => {
     const h = (e: MouseEvent) => {
       mouseX.set((e.clientX / window.innerWidth) - 0.5);
@@ -45,14 +42,6 @@ export function HeroSection() {
     window.addEventListener("mousemove", h);
     return () => window.removeEventListener("mousemove", h);
   }, [mouseX, mouseY]);
-
-  if (!mounted) {
-    return (
-      <section id="hero" className="relative min-h-screen flex items-center justify-center">
-        <div className="text-[var(--muted)] font-mono text-sm animate-pulse">...</div>
-      </section>
-    );
-  }
 
   return (
     <section id="hero" className="relative min-h-screen flex items-center overflow-hidden">
