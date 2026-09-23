@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ThemeToggle } from "@/components/toggles/ThemeToggle";
 import { MagneticWrapper } from "@/components/ui/MagneticWrapper";
@@ -14,7 +14,6 @@ const navLinks = [
 ] as const;
 
 export function Header() {
-  const [mounted, setMounted] = useState(false);
   const [hovered, setHovered] = useState<string | null>(null);
   const { scrollY } = useScroll();
 
@@ -33,14 +32,6 @@ export function Header() {
   );
 
   const t = dict();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return <header className="fixed top-0 left-0 right-0 h-20 z-50" />;
-  }
 
   return (
     <motion.header

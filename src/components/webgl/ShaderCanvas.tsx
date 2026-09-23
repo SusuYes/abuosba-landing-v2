@@ -3,6 +3,7 @@
 import { useEffect, useRef, useCallback } from "react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useDeviceCapability } from "@/hooks/useDeviceCapability";
+import { useScrollOrchestrator } from "@/hooks/useScrollOrchestrator";
 
 const vertexShader = `
   attribute vec2 position;
@@ -167,15 +168,7 @@ const fragmentShader = `
   }
 `;
 
-interface ShaderCanvasProps {
-  scrollProgress: number;
-  scrollY: number;
-  mouseX: number;
-  mouseY: number;
-  sectionPulse: number;
-}
-
-export function ShaderCanvas({ scrollProgress, mouseX, mouseY, sectionPulse }: ShaderCanvasProps) {
+export function ShaderCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const glRef = useRef<WebGLRenderingContext | null>(null);
   const programRef = useRef<WebGLProgram | null>(null);
@@ -185,8 +178,18 @@ export function ShaderCanvas({ scrollProgress, mouseX, mouseY, sectionPulse }: S
   const reducedMotion = useReducedMotion();
   const capability = useDeviceCapability();
 
-  const propsRef = useRef({ scrollProgress, mouseX, mouseY, sectionPulse });
-  propsRef.current = { scrollProgress, mouseX, mouseY, sectionPulse };
+  const sampleScroll = useScrollOrchestrator();
+  // Normalized (-1..1) pointer position, kept in a ref so moves don't re-render
+  const mouseRef = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMove = (e: MouseEvent) => {
+      mouseRef.current.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouseRef.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
+    };
+    window.addEventListener("mousemove", handleMove, { passive: true });
+    return () => window.removeEventListener("mousemove", handleMove);
+  }, []);
 
   const initGL = useCallback(() => {
     const canvas = canvasRef.current;
@@ -245,8 +248,9 @@ export function ShaderCanvas({ scrollProgress, mouseX, mouseY, sectionPulse }: S
     const canvas = canvasRef.current;
     if (!gl || !programRef.current || !canvas) return;
 
-    const { scrollProgress, mouseX, mouseY, sectionPulse } = propsRef.current;
-    const resolve = Math.min(scrollProgress * 2.5, 1.0);
+    const { progress, sectionPulse } = sampleScroll();
+    const { x: mouseX, y: mouseY } = mouseRef.current;
+    const resolve = Math.min(progress * 2.5, 1.0);
     const time = (Date.now() - startTimeRef.current) / 1000;
     const isDark = document.documentElement.classList.contains("dark") ? 1.0 : 0.0;
     const locs = uniformLocationsRef.current;
@@ -260,7 +264,7 @@ export function ShaderCanvas({ scrollProgress, mouseX, mouseY, sectionPulse }: S
 
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     frameRef.current = requestAnimationFrame(render);
-  }, []);
+  }, [sampleScroll]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
