@@ -1,0 +1,7 @@
+{
+ "mark.svg": "1 Jan 2027, 04:20:41 Sana'a: full night (sun −29.9°), rete upright (LST 164.84°), every star at full strength, the sun on the ي bowl below the horizon, Suhail on the western horizon (setting, still lit by the −0.57° rule)",
+ "mark-day.svg": "6 Sep 2026, 12:00:42 Sana'a: the same upright pose within 0.23° of solar noon (sun +81°), day sky, stars faded, the sun high on its rail",
+ "mark-small.svg": "the reduced variant for 64 px and below: Suhail's star 1.7x, no half-hour ticks, glyphs or trail (night instant)",
+ "mark-mono-brass.svg": "one colour #b78a3c on transparent: letters (with the star-pointer), rim with the hour ticks and noon/midnight glyphs cut through, rise/set marks, throne and ring, horizon, pivot, and Suhail's star separated by its piercing; no sun, no sky",
+ "mark-mono-dark.svg": "the same in #1b1a17"
+}
