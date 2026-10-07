@@ -1,0 +1,104 @@
+@import "@fontsource/alegreya/400.css";
+@import "@fontsource/alegreya/500.css";
+@import "@fontsource/alegreya/400-italic.css";
+@import "@fontsource/alegreya-sans-sc/500.css";
+@import "@fontsource/noto-naskh-arabic/400.css";
+@import "@fontsource/noto-naskh-arabic/600.css";
+@import "@fontsource/noto-sans-old-south-arabian/400.css";
+
+/* Night is the default sky. Stage 2 drives these from the sun over Sana'a. */
+:root {
+  color-scheme: dark;
+  --g: #161b44;      /* ground */
+  --t: #ece8e0;      /* text */
+  --m: #a9a6b8;      /* muted text */
+  --a: #f0b93a;      /* accent gold */
+  --b: #b78a3c;      /* brass */
+  --r: rgba(236, 232, 224, 0.14); /* rules */
+
+  /* qamariya glass, held in a night-blue frame (mosaic) */
+  --gg: #b78a3c;     /* brass */
+  --gp: #efcb94;     /* light brass */
+  --gb: #2e3570;     /* the logo's blue */
+  --rd: #b8432c;     /* red */
+  --gy: #f4efe6;     /* gypsum: the brick band */
+  --gt: #161b44;     /* the frame between panes */
+  --gtw: 1.6px;
+  --gtwd: 1px;
+  --gtpb: 1px;
+
+  --serif: "Alegreya", Georgia, serif;
+  --caps: "Alegreya Sans SC", sans-serif;
+  --arabic: "Noto Naskh Arabic", serif;
+  --musnad: "Noto Sans Old South Arabian", serif;
+
+  --wrap: 1100px;
+  --gutter: 24px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--g);
+  color: var(--t);
+  font: 400 19px/1.55 var(--serif);
+  font-variant-numeric: lining-nums;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+a { color: inherit; text-decoration-color: color-mix(in oklab, var(--a) 60%, transparent); text-underline-offset: 3px; }
+a:hover { color: var(--a); }
+:focus-visible { outline: 2px solid var(--a); outline-offset: 3px; border-radius: 2px; }
+
+h1, h2, h3, h4, p { margin: 0; }
+
+[lang="ar"], .ar { font-family: var(--arabic); }
+
+.wrap { width: 100%; max-width: var(--wrap); margin-inline: auto; padding-inline: var(--gutter); }
+
+.skip { position: absolute; left: -9999px; }
+.skip:focus { left: 16px; top: 12px; z-index: 10; background: var(--g); padding: 6px 12px; }
+
+/* type scale (Reed pen) */
+.lb { font: 500 12px var(--caps); letter-spacing: 0.14em; text-transform: uppercase; color: var(--a); }
+.display { font: 500 clamp(32px, 8vw, 46px)/1.05 var(--serif); text-wrap: balance; margin: 8px 0 6px; }
+.an { font-size: 22px; color: var(--m); margin: 0 0 16px; text-align: left; }
+.lede { font-size: 21px; line-height: 1.45; max-width: 34ch; }
+.h2 { font: 500 27px/1.15 var(--serif); margin: 8px 0 4px; text-wrap: balance; }
+.prose p { font-size: 19px; line-height: 1.55; max-width: 62ch; margin: 0 0 14px; }
+.prose p:last-child { margin-bottom: 0; }
+.side-h { font: 500 12px var(--caps); letter-spacing: 0.14em; text-transform: uppercase; color: var(--m); margin: 0 0 10px; }
+.muted { color: var(--m); }
+
+main { flex: 1; }
+
+/* two-column page: article + aside */
+.page { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 40px; padding-block: 32px 48px; }
+.page.single { grid-template-columns: minmax(0, 1fr); max-width: 760px; }
+@media (max-width: 760px) {
+  :root { --gutter: 16px; }
+  .page { grid-template-columns: 1fr; gap: 32px; padding-block: 24px 40px; }
+}
+
+/* lists marked with round qamariya windows */
+.windows { list-style: none; margin: 0 0 24px; padding: 0; }
+.windows li { display: grid; grid-template-columns: 16px 1fr auto; gap: 2px 10px; align-items: baseline; padding: 10px 0; border-top: 1px solid var(--r); }
+.windows .mk { width: 16px; height: 16px; }
+.windows .mk svg { width: 16px; height: 16px; display: block; transform: translateY(2px); filter: drop-shadow(rgba(240, 185, 58, 0.35) 0 0 10px); }
+.windows .t { font: 500 22px/1.25 var(--serif); }
+.windows .t a { text-decoration: none; }
+.windows .t a:hover { text-decoration: underline; }
+.windows .y { font-size: 13px; color: var(--m); font-variant-numeric: tabular-nums lining-nums; }
+.windows .d { grid-column: 2 / -1; font-size: 17px; color: var(--m); }
+
+.facts { width: 100%; border-collapse: collapse; }
+.facts td { padding: 6px 0; border-top: 1px solid var(--r); font-size: 17px; }
+.facts td.n { text-align: right; font-size: 15px; font-variant-numeric: tabular-nums lining-nums; }
+
+.qam-dot .gl-gyp { stroke-width: var(--gtwd, 2.2px); }
+.gl-gyp { stroke: var(--gt); stroke-width: var(--gtw, 5px); }

@@ -1,0 +1,27 @@
+---
+import Base from "../../layouts/Base.astro";
+import Divider from "../../components/Divider.astro";
+import Window from "../../components/Window.astro";
+import { projects } from "../../data/work";
+import { sections } from "../../data/sections";
+---
+<Base title="Work" description="Things I've built.">
+  <div class="page single">
+    <article>
+      <div class="lb">Work</div>
+      <h1 class="display">Things I've built</h1>
+      <p class="lede">Systems, data and tools, mostly for students and the people who look after them.</p>
+      <Divider {...sections.work} />
+      <ul class="windows">
+        {projects.map((p) => (
+          <li>
+            <Window />
+            <span class="t"><a href={`/work/${p.slug}/`}>{p.title}</a></span>
+            <span class="y"></span>
+            <span class="d">{p.line}</span>
+          </li>
+        ))}
+      </ul>
+    </article>
+  </div>
+</Base>

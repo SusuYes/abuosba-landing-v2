@@ -28,28 +28,15 @@ jobs:
       - run: npm ci
 
       - name: Typecheck
-        run: npx tsc --noEmit
-
-      # Without the key the contact form silently falls back to mailto:, so refuse to publish without it
-      - name: Require Web3Forms key for deploys
-        if: github.event_name != 'pull_request'
-        env:
-          WEB3FORMS_KEY: ${{ secrets.WEB3FORMS_KEY }}
-        run: |
-          if [ -z "$WEB3FORMS_KEY" ]; then
-            echo "::error::Repository secret WEB3FORMS_KEY is not set (Settings > Secrets and variables > Actions)."
-            exit 1
-          fi
+        run: npm run check
 
       - name: Build static site
-        env:
-          NEXT_PUBLIC_WEB3FORMS_KEY: ${{ secrets.WEB3FORMS_KEY }}
         run: npm run build
 
       - uses: actions/upload-pages-artifact@v4
         if: github.event_name != 'pull_request'
         with:
-          path: out
+          path: dist
 
   deploy:
     if: github.event_name != 'pull_request'

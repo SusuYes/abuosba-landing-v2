@@ -1,0 +1,24 @@
+---
+import Base from "../../layouts/Base.astro";
+import Divider from "../../components/Divider.astro";
+import { projects, type Project } from "../../data/work";
+import { sections } from "../../data/sections";
+
+export function getStaticPaths() {
+  return projects.map((p) => ({ params: { slug: p.slug }, props: { project: p } }));
+}
+const { project } = Astro.props as { project: Project };
+---
+<Base title={project.title} description={project.line}>
+  <div class="page single">
+    <article>
+      <div class="lb"><a href="/work/">Work</a></div>
+      <h1 class="display">{project.title}</h1>
+      <p class="lede">{project.line}</p>
+      <Divider {...sections.work} />
+      <div class="prose">
+        {project.body.map((para) => <p>{para}</p>)}
+      </div>
+    </article>
+  </div>
+</Base>

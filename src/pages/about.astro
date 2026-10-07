@@ -1,0 +1,29 @@
+---
+import Base from "../layouts/Base.astro";
+import Divider from "../components/Divider.astro";
+import { sections } from "../data/sections";
+---
+<Base title="About" description="The short version.">
+  <div class="page single">
+    <article>
+      <div class="lb">About</div>
+      <h1 class="display">The short version</h1>
+      <Divider {...sections.about} />
+      <div class="prose">
+        <p>I work in higher education, where I build systems, automate workflows and make sense of messy data, all to give students a better experience. A lot of that is code, and connecting things through APIs.</p>
+        <p>When I have time, I help an NGO with community and cultural projects: tech setup, process improvement, that kind of thing.</p>
+        <p>Outside work I tinker: 3D printing, smart-home setups and side projects. I like clear thinking, practical tools and probably too much coffee.</p>
+      </div>
+      <h2 class="side-h contact">Say hello</h2>
+      <ul class="links">
+        <li><a href="mailto:suhail@abuosba.com">suhail@abuosba.com</a></li>
+        <li><a href="https://www.linkedin.com/in/abuosba" rel="me">LinkedIn</a></li>
+      </ul>
+    </article>
+  </div>
+</Base>
+
+<style>
+  .contact { margin-top: 32px; }
+  .links { list-style: none; padding: 0; margin: 0; display: flex; gap: 24px; flex-wrap: wrap; font-size: 19px; }
+</style>

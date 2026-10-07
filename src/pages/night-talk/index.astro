@@ -1,0 +1,17 @@
+---
+import Base from "../../layouts/Base.astro";
+import Divider from "../../components/Divider.astro";
+import { sections } from "../../data/sections";
+---
+<Base title="Night Talk" description="Short thoughts and longer essays.">
+  <div class="page single">
+    <article>
+      <div class="lb">Night Talk</div>
+      <h1 class="display">Night Talk</h1>
+      <p class="an" lang="ar" dir="rtl">تأمّلات</p>
+      <p class="lede">Short thoughts and longer essays, the kind of talk that runs late under the stars.</p>
+      <Divider {...sections.nightTalk} />
+      <p class="muted">Nothing here yet. The first posts are on their way.</p>
+    </article>
+  </div>
+</Base>

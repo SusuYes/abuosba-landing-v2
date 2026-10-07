@@ -1,0 +1,48 @@
+---
+import Base from "../layouts/Base.astro";
+import Qamariya from "../components/Qamariya.astro";
+import Divider from "../components/Divider.astro";
+import Window from "../components/Window.astro";
+import { projects } from "../data/work";
+import { sections, suhailOverSanaa } from "../data/sections";
+---
+<Base>
+  <div class="page">
+    <article>
+      <Qamariya />
+      <div class="lb">Suhail</div>
+      <h1 class="display">A sky that follows Sana'a</h1>
+      <p class="an" lang="ar" dir="rtl">سهيل</p>
+      <p class="lede">I make dashboards, untangle messy data and help students figure things out. This is my corner of the internet; the sky here follows the sun over Sana'a.</p>
+
+      <Divider {...sections.nightTalk} />
+
+      <section aria-labelledby="nt">
+        <h2 id="nt" class="h2">Night Talk</h2>
+        <p class="muted">Short thoughts and longer essays, written late. The first ones are on their way.</p>
+        <p><a href="/night-talk/">All of Night Talk</a></p>
+      </section>
+    </article>
+
+    <aside>
+      <h2 class="side-h">Work</h2>
+      <ul class="windows">
+        {projects.map((p) => (
+          <li>
+            <Window />
+            <span class="t"><a href={`/work/${p.slug}/`}>{p.title}</a></span>
+            <span class="y"></span>
+            <span class="d">{p.line}</span>
+          </li>
+        ))}
+      </ul>
+
+      <h2 class="side-h">Suhail over Sana'a</h2>
+      <table class="facts">
+        <tbody>
+          {suhailOverSanaa.map(([k, v]) => <tr><td>{k}</td><td class="n">{v}</td></tr>)}
+        </tbody>
+      </table>
+    </aside>
+  </div>
+</Base>

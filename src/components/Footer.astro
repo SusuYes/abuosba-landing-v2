@@ -1,0 +1,32 @@
+---
+---
+<footer class="ft">
+  <div class="in">
+    <span class="sig">
+      <img src="/brand/wordmark-brass.svg" alt="سُهَيْل" width="57" height="36" />
+      <span>© 2026 Suhail AbuOsba</span>
+    </span>
+    <span class="live">Sana'a <b data-sanaa-time>--:--</b></span>
+  </div>
+</footer>
+
+<script>
+  // Sana'a civil time (UTC+3). The sky readings join this in stage 2.
+  const el = document.querySelector<HTMLElement>("[data-sanaa-time]");
+  const fmt = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Aden", hour: "2-digit", minute: "2-digit" });
+  const tick = () => { if (el) el.textContent = fmt.format(new Date()); };
+  tick();
+  setInterval(tick, 15000);
+</script>
+
+<style>
+  .ft { border-top: 1px solid var(--r); }
+  .in {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+    padding: 14px var(--gutter); max-width: var(--wrap); margin-inline: auto;
+    font-size: 13px; color: var(--m); font-variant-numeric: tabular-nums lining-nums;
+  }
+  .sig { display: flex; align-items: center; gap: 16px; }
+  .sig img { width: 57px; height: 36px; }
+  b { color: var(--a); font-weight: 400; }
+</style>
