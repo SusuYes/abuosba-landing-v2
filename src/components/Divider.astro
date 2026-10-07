@@ -1,0 +1,40 @@
+---
+// A section opens with its Arabic name in Musnad, one consonant to a pane of glass.
+interface Props {
+  letters: readonly string[];   // Musnad letters in reading order (right to left)
+  gloss: string;       // transliteration · Arabic · English
+}
+const { letters, gloss } = Astro.props;
+const [tr, ar, en] = gloss.split(" · ");
+const glass = ["var(--gb)", "var(--gp)", "var(--rd)", "var(--gg)"];
+---
+<div class="dv" role="separator" aria-label={gloss} data-mo>
+  <div class="row" aria-hidden="true">
+    <div class="rl"></div><div class="bar"></div>
+    <span class="panes" dir="rtl">
+      {letters.map((l, i) => (
+        <span class="pane" style={`--c:${glass[i % glass.length]};--i:${i}`}><span lang="xsa">{l}</span></span>
+      ))}
+    </span>
+    <div class="bar"></div><div class="rl"></div>
+  </div>
+  <span class="gloss" aria-hidden="true">{tr} · <bdi lang="ar">{ar}</bdi> · {en}</span>
+</div>
+
+<style>
+  .dv { display: flex; flex-direction: column; align-items: center; gap: 8px; margin: 0 0 44px; }
+  .row { display: flex; align-items: center; gap: 14px; width: 100%; }
+  .rl { flex: 1 1 0%; height: 1px; background: var(--b); }
+  .bar { width: 2px; height: 28px; background: var(--a); }
+  .panes { display: flex; gap: 5px; }
+  .pane {
+    display: flex; align-items: flex-end; justify-content: center;
+    width: 34px; height: 44px; padding-bottom: 5px;
+    border-radius: 17px 17px 2px 2px;
+    background: var(--c);
+    border: var(--gtpb, 3px) solid var(--gt);
+    box-shadow: 0 0 12px color-mix(in oklab, var(--c) 55%, transparent);
+  }
+  .pane span { font: 24px/1 var(--musnad); color: #1b1a17; }
+  .gloss { font: 12px var(--caps); letter-spacing: 0.08em; color: var(--m); }
+</style>

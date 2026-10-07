@@ -1,0 +1,70 @@
+---
+import Base from "../layouts/Base.astro";
+import Qamariya from "../components/Qamariya.astro";
+import Divider from "../components/Divider.astro";
+import ProjectCards from "../components/ProjectCards.astro";
+import SkyWidget from "../components/SkyWidget.astro";
+import { sections } from "../data/sections";
+---
+<Base intro>
+  <section class="hero wrap">
+    <div data-reveal><Qamariya size={460} /></div>
+    <p class="lb" data-reveal style="--i:1">Suhail AbuOsba <span class="ar" lang="ar">· سهيل</span></p>
+    <h1 class="display" data-reveal style="--i:2">I turn messy data into tools people <em>actually</em> use.</h1>
+    <p class="lede" data-reveal style="--i:3">Systems, automations and dashboards for higher education. Named after a star; this site keeps Sana'a time.</p>
+    <div class="btns" data-reveal style="--i:4">
+      <a class="btn solid" href="#work">See the work</a>
+      <a class="btn" href="/about/">About me</a>
+    </div>
+  </section>
+
+  <section id="work" class="band wrap">
+    <Divider {...sections.work} />
+    <div class="sec-h">
+      <div>
+        <span class="lb" data-reveal>Selected work</span>
+        <h2 class="h2" data-reveal style="--i:1">Built for students, and the people behind them.</h2>
+      </div>
+      <a class="more" href="/work/" data-reveal style="--i:2">All work</a>
+    </div>
+    <ProjectCards />
+  </section>
+
+  <section class="band wrap">
+    <SkyWidget />
+  </section>
+
+  <section class="band wrap split">
+    <div>
+      <Divider {...sections.nightTalk} />
+      <span class="lb" data-reveal>Night Talk <span class="ar" lang="ar">· تأمّلات</span></span>
+      <h2 class="h2" data-reveal style="--i:1">Late thoughts, written down.</h2>
+      <p class="lede" data-reveal style="--i:2">Short notes and longer essays on data, work and everything in between. The first ones land soon.</p>
+      <a class="more" href="/night-talk/" data-reveal style="--i:3">Read Night Talk</a>
+    </div>
+    <div>
+      <Divider {...sections.about} />
+      <span class="lb" data-reveal>About</span>
+      <h2 class="h2" data-reveal style="--i:1">Higher ed by day. 3D printers by night.</h2>
+      <p class="lede" data-reveal style="--i:2">I also help an NGO with community and cultural projects, and drink more coffee than is wise.</p>
+      <a class="more" href="/about/" data-reveal style="--i:3">More about me</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    min-height: calc(100svh - 96px); display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; gap: 22px; padding-block: clamp(40px, 7vw, 88px) clamp(56px, 9vw, 112px);
+  }
+  .hero > div:first-child { width: 100%; margin-bottom: 8px; }
+  .hero .display { max-width: 15ch; }
+  .hero .lede { max-width: 34ch; }
+  .hero .btns { justify-content: center; margin-top: 10px; }
+  .hero + .band { padding-top: clamp(24px, 4vw, 48px); }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(48px, 8vw, 112px); }
+  .split > div { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+  .split .lede { margin-bottom: 6px; }
+  .split :global(.dv) { align-self: stretch; }
+  @media (max-width: 860px) { .split { grid-template-columns: 1fr; } }
+</style>

@@ -1,0 +1,23 @@
+---
+import Base from "../../layouts/Base.astro";
+import Divider from "../../components/Divider.astro";
+import { sections } from "../../data/sections";
+---
+<Base title="Night Talk" description="Short notes and longer essays by Suhail AbuOsba.">
+  <div class="wrap">
+    <header class="page-h">
+      <span class="lb" data-reveal>Night Talk <span class="ar" lang="ar">· تأمّلات</span></span>
+      <h1 class="display" data-reveal style="--i:1">Late thoughts, written down.</h1>
+      <p class="lede" data-reveal style="--i:2">Short notes and longer essays, the kind of talk that runs late under the stars.</p>
+    </header>
+    <div class="page-body">
+      <div class="band-sm"><Divider {...sections.nightTalk} /></div>
+      <p class="empty" data-reveal>Nothing here yet. The first posts are on their way.</p>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .band-sm { padding-block: clamp(48px, 7vw, 80px) 0; }
+  .empty { color: var(--m); font-style: italic; font-size: 20px; }
+</style>

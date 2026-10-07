@@ -1,0 +1,43 @@
+---
+// The landing, first visit only (see motion.css). The drawing is the brand book's chosen sequence.
+import draw from "../assets/astrolabe-draw.svg?raw";
+---
+<div class="intro" aria-hidden="true">
+  <div class="ia-big" set:html={draw} />
+</div>
+
+<script>
+  const html = document.documentElement;
+  const layer = document.querySelector<HTMLElement>(".intro");
+  if (layer && !html.classList.contains("intro-on")) layer.remove();
+  if (layer && html.classList.contains("intro-on")) {
+    const big = layer.querySelector<HTMLElement>(".ia-big")!;
+    const mark = document.querySelector<HTMLElement>(".hd .mark")!;
+    // Size it to the screen, centre it, and aim the hoist at the header's astrolabe.
+    const place = () => {
+      const vw = innerWidth, vh = innerHeight;
+      const w = Math.min(300, vw * 0.62), h = (w * 801) / 680, top = Math.max(96, (vh - h) / 2 - 12);
+      const m = mark.getBoundingClientRect();
+      layer.style.setProperty("--iw", w + "px");
+      layer.style.setProperty("--iy", top + "px");
+      big.style.setProperty("--sc", (m.width / w).toFixed(4));
+      big.style.setProperty("--txc", (m.left + m.width / 2 - vw / 2).toFixed(1) + "px");
+      big.style.setProperty("--ty", (m.top - top).toFixed(1) + "px");
+    };
+    place();
+    addEventListener("resize", place);
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      html.classList.add("intro-done");
+      html.classList.remove("intro-on");
+      layer.remove();
+      try { localStorage.setItem("seen-landing", "1"); } catch (e) {}
+      ["wheel", "touchstart", "keydown", "pointerdown"].forEach((t) => removeEventListener(t, finish));
+    };
+    // Any intent to read skips straight to the page.
+    ["wheel", "touchstart", "keydown", "pointerdown"].forEach((t) => addEventListener(t, finish, { passive: true }));
+    setTimeout(finish, 7500);
+  }
+</script>

@@ -1,0 +1,285 @@
+---
+// "Is Suhail up?": the sky over Sana'a right now, drawn as a dome seen from below
+// (zenith in the middle, horizon at the rim, north at the top, east on the left).
+// Drag through the next day, or play it, to watch Suhail cross the south.
+---
+<section class="sky" data-sky aria-labelledby="sky-h">
+  <div class="dome-wrap" data-reveal>
+    <svg class="dome" viewBox="-124 -124 248 248" role="img" aria-labelledby="sky-alt">
+      <title id="sky-alt">The sky over Sana'a</title>
+      <defs>
+        <radialGradient id="sky-fill" cx="0" cy="0" r="100" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="var(--sky-in, #1e2560)" />
+          <stop offset="1" stop-color="var(--sky-out, #0d1135)" />
+        </radialGradient>
+        <radialGradient id="sky-glow"><stop offset="0" stop-color="#f0b93a" stop-opacity=".55" /><stop offset="1" stop-color="#f0b93a" stop-opacity="0" /></radialGradient>
+        <clipPath id="sky-clip"><circle r="100" /></clipPath>
+      </defs>
+      <circle r="100" fill="url(#sky-fill)" />
+      <g clip-path="url(#sky-clip)">
+        <g class="grid">
+          <circle r="33.33" /><circle r="66.67" />
+          <line x1="-100" y1="0" x2="100" y2="0" /><line x1="0" y1="-100" x2="0" y2="100" />
+        </g>
+        <g class="stars" data-stars></g>
+        <path class="track" data-track d="" />
+        <g class="body moon" data-moon><circle r="6.5" class="disc" /><path class="lit" d="" /></g>
+        <g class="body sun" data-sun><circle r="22" fill="url(#sky-glow)" /><circle r="7" class="disc" /></g>
+        <g class="body suhail" data-suhail>
+          <circle r="10" class="halo" />
+          <path class="gem" d="M0,-7 L1.6,-1.6 L7,0 L1.6,1.6 L0,7 L-1.6,1.6 L-7,0 L-1.6,-1.6Z" />
+          <text y="-12" class="tag">Suhail</text>
+        </g>
+      </g>
+      <circle r="100" class="rim" />
+      <circle r="106" class="rim2" />
+      <g class="ticks" data-ticks></g>
+      <g class="dirs">
+        <text y="-111">N</text><text y="117">S</text><text x="-114" y="3">E</text><text x="114" y="3">W</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="read">
+    <p class="lb" data-reveal>Look up · Sana'a</p>
+    <h2 id="sky-h" class="h2" data-reveal style="--i:1" data-sky-head>Is Suhail up?</h2>
+    <p class="lede" data-reveal style="--i:2" data-sky-line>Suhail is Canopus, the second-brightest star in the sky. Here is where it stands over Sana'a right now.</p>
+    <dl class="rows" data-reveal style="--i:3">
+      <div><dt><i class="k sun"></i>Sun</dt><dd data-sky-sun>--</dd></div>
+      <div><dt><i class="k moon"></i>Moon</dt><dd data-sky-moon>--</dd></div>
+      <div><dt><i class="k suhail"></i>Suhail</dt><dd data-sky-suhail>--</dd></div>
+    </dl>
+    <div class="scrub" data-reveal style="--i:4">
+      <button type="button" class="play" data-sky-play aria-pressed="false"><span class="ic" aria-hidden="true"></span><span data-sky-play-label>Play the next 24 hours</span></button>
+      <label class="range">
+        <span class="sr">Time over Sana'a</span>
+        <input type="range" min="0" max="1440" step="5" value="0" data-sky-range />
+      </label>
+      <output class="when" data-sky-when>Now</output>
+      <button type="button" class="now" data-sky-now hidden>Back to now</button>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { altAz, bodyAltAz, isUp, nextCrossing, culmination, moonPhase, SUHAIL, STARS, type Body } from "../lib/sky";
+
+  const root = document.querySelector<HTMLElement>("[data-sky]");
+  if (root) {
+    const $ = <T extends Element = HTMLElement>(s: string) => root.querySelector<T>(s)!;
+    const svgNS = "http://www.w3.org/2000/svg";
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const clock = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Aden", hour: "2-digit", minute: "2-digit" });
+    const dayName = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Aden", weekday: "short" });
+    const at = (d: Date) => clock.format(d);
+
+    // Looking up: north at the top, east on the left. The rim is the horizon, the centre straight overhead.
+    const xy = (alt: number, az: number): [number, number] => {
+      const r = (100 * (90 - alt)) / 90, a = (az * Math.PI) / 180;
+      return [-r * Math.sin(a), -r * Math.cos(a)];
+    };
+
+    // hour ticks on the outer ring, and the stars
+    const ticks = $("[data-ticks]");
+    for (let i = 0; i < 72; i++) {
+      const a = (i * 5 * Math.PI) / 180, long = i % 6 === 0, r1 = 100, r2 = long ? 106 : 103;
+      const l = document.createElementNS(svgNS, "line");
+      l.setAttribute("x1", (r1 * Math.sin(a)).toFixed(2)); l.setAttribute("y1", (r1 * Math.cos(a)).toFixed(2));
+      l.setAttribute("x2", (r2 * Math.sin(a)).toFixed(2)); l.setAttribute("y2", (r2 * Math.cos(a)).toFixed(2));
+      ticks.appendChild(l);
+    }
+    const starG = $("[data-stars]");
+    const stars = STARS.map(([name, ra, dec, mag]) => {
+      const c = document.createElementNS(svgNS, "circle");
+      c.setAttribute("r", Math.max(0.55, 1.9 - mag * 0.45).toFixed(2));
+      const t = document.createElementNS(svgNS, "title"); t.textContent = name; c.appendChild(t);
+      starG.appendChild(c);
+      return { c, ra, dec };
+    });
+
+    const sunG = $("[data-sun]"), moonG = $("[data-moon]"), suhailG = $("[data-suhail]");
+    const lit = $<SVGPathElement>("[data-moon] .lit"), track = $<SVGPathElement>("[data-track]");
+
+    // the colour of the sky follows the sun's altitude
+    const stops: [number, string, string][] = [
+      [-18, "#141a4a", "#0b0f30"], [-12, "#1d2560", "#10153d"], [-6, "#3a2f72", "#1b1d4e"],
+      [-2, "#8e4a4a", "#3a2a5c"], [2, "#d48a48", "#6a3d4e"], [8, "#5f8fcf", "#2f5c9a"], [30, "#6aa0dc", "#2d5a94"],
+    ];
+    const hex = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+    const mix = (a: string, b: string, t: number) => "rgb(" + hex(a).map((v, i) => Math.round(v + (hex(b)[i] - v) * t)).join(",") + ")";
+    const skyAt = (alt: number) => {
+      if (alt <= stops[0][0]) return [stops[0][1], stops[0][2]];
+      for (let i = 1; i < stops.length; i++) if (alt <= stops[i][0]) {
+        const [a0, i0, o0] = stops[i - 1], [a1, i1, o1] = stops[i], t = (alt - a0) / (a1 - a0);
+        return [mix(i0, i1, t), mix(o0, o1, t)];
+      }
+      return [stops[stops.length - 1][1], stops[stops.length - 1][2]];
+    };
+
+    const place = (g: Element, alt: number, az: number) => {
+      const [x, y] = xy(alt, az);
+      g.setAttribute("transform", `translate(${x.toFixed(2)} ${y.toFixed(2)})`);
+      g.classList.toggle("down", alt < 0);
+    };
+
+    // Suhail's whole path above the horizon over the next day, a dotted arc low in the south
+    const drawTrack = (d: Date) => {
+      let p = "", pen = false;
+      for (let m = 0; m <= 1440; m += 6) {
+        const [alt, az] = altAz(SUHAIL.ra, SUHAIL.dec, new Date(d.getTime() + m * 60000));
+        if (alt > 0) { const [x, y] = xy(alt, az); p += (pen ? "L" : "M") + x.toFixed(1) + "," + y.toFixed(1); pen = true; } else pen = false;
+      }
+      track.setAttribute("d", p);
+    };
+
+    const riseSet = (b: Body, d: Date) => {
+      const up = isUp(b, d), next = nextCrossing(b, d, up ? "set" : "rise");
+      const verb = up ? "sets" : "rises";
+      return next ? `${up ? "Up" : "Down"}, ${verb} ${at(next)}` : up ? "Up all day" : "Down all day";
+    };
+
+    const head = $("[data-sky-head]"), line = $("[data-sky-line]"), when = $("[data-sky-when]");
+    const range = $<HTMLInputElement>("[data-sky-range]");
+    let offset = 0; // minutes from now
+
+    const render = () => {
+      const now = new Date(), d = new Date(now.getTime() + offset * 60000);
+      const [sAlt, sAz] = bodyAltAz("sun", d), [mAlt, mAz] = bodyAltAz("moon", d), [cAlt, cAz] = bodyAltAz("suhail", d);
+      const [inner, outer] = skyAt(sAlt);
+      root.style.setProperty("--sky-in", inner); root.style.setProperty("--sky-out", outer);
+      const starOp = Math.max(0, Math.min(1, (-sAlt - 3) / 9));
+      starG.style.opacity = String(starOp);
+      stars.forEach(({ c, ra, dec }) => {
+        const [alt, az] = altAz(ra, dec, d);
+        if (alt < 0) { c.setAttribute("visibility", "hidden"); return; }
+        const [x, y] = xy(alt, az); c.setAttribute("visibility", "visible");
+        c.setAttribute("cx", x.toFixed(2)); c.setAttribute("cy", y.toFixed(2));
+      });
+      place(sunG, sAlt, sAz); place(moonG, mAlt, mAz); place(suhailG, cAlt, cAz);
+
+      // the moon's lit part, turned towards the sun on the dome
+      const { k } = moonPhase(d), [sx, sy] = xy(sAlt, sAz), [mx, my] = xy(mAlt, mAz);
+      const ang = (Math.atan2(sy - my, sx - mx) * 180) / Math.PI, r = 6.5, e = Math.abs(1 - 2 * k) * r;
+      lit.setAttribute("d", `M0,${-r} A${r},${r} 0 0 1 0,${r} A${e},${r} 0 0 ${k > 0.5 ? 1 : 0} 0,${-r}Z`);
+      lit.setAttribute("transform", `rotate(${ang.toFixed(1)})`);
+
+      const up = cAlt > -0.57, sunUp = sAlt > -0.833;
+      head.textContent = up ? (offset ? "Suhail is up then." : "Yes. Suhail is up.") : offset ? "Suhail is down then." : "Not right now.";
+      const t = at(d);
+      if (up) {
+        const set = nextCrossing("suhail", d, "set");
+        line.innerHTML = `At <b>${t}</b> in Sana'a, Suhail stands <b>${cAlt.toFixed(0)}°</b> above the southern horizon${sunUp ? ", lost in daylight" : ""}. ${set ? `It sets at <b>${at(set)}</b>.` : ""}`;
+      } else {
+        const rise = nextCrossing("suhail", d, "rise");
+        const [peak] = culmination("suhail", rise ?? d);
+        line.innerHTML = `At <b>${t}</b> in Sana'a it is below the horizon. ${rise ? `It rises in the south-east at <b>${at(rise)}</b> and climbs to ${peak.toFixed(0)}°.` : ""}`;
+      }
+      $("[data-sky-sun]").textContent = riseSet("sun", d);
+      const ph = moonPhase(d);
+      $("[data-sky-moon]").textContent = `${riseSet("moon", d)} · ${Math.round(ph.k * 100)}% lit, ${ph.waxing ? "waxing" : "waning"}`;
+      $("[data-sky-suhail]").textContent = riseSet("suhail", d);
+      when.textContent = offset ? `${dayName.format(d)} ${t}` : "Now";
+      $("#sky-alt").textContent = `The sky over Sana'a at ${t}: Suhail ${up ? "up" : "below the horizon"}, the sun ${sunUp ? "up" : "down"}.`;
+    };
+
+    drawTrack(new Date());
+    render();
+    setInterval(() => { if (!playing) render(); }, 30000);
+
+    const btn = $<HTMLButtonElement>("[data-sky-play]"), label = $("[data-sky-play-label]"), nowBtn = $<HTMLButtonElement>("[data-sky-now]");
+    let playing = false, raf = 0, last = 0;
+    const sync = () => {
+      range.value = String(Math.round(offset));
+      nowBtn.hidden = offset === 0;
+      btn.setAttribute("aria-pressed", String(playing));
+      label.textContent = playing ? "Pause" : offset >= 1440 ? "Play it again" : offset ? "Keep going" : "Play the next 24 hours";
+      render();
+    };
+    const stop = () => { playing = false; cancelAnimationFrame(raf); sync(); };
+    // play the next day: a full turn of the sky in about twelve seconds
+    const frame = (ts: number) => {
+      if (!playing) return;
+      offset = Math.min(1440, offset + ((last ? ts - last : 16) / 1000) * (1440 / 12));
+      last = ts;
+      if (offset >= 1440) { stop(); return; }
+      sync();
+      raf = requestAnimationFrame(frame);
+    };
+    btn.addEventListener("click", () => {
+      if (playing) { stop(); return; }
+      if (offset >= 1440) offset = 0;
+      if (reduce) { offset = Math.min(1440, offset + 60); sync(); return; } // an hour a press, no animation
+      playing = true; last = 0; sync();
+      raf = requestAnimationFrame(frame);
+    });
+    range.addEventListener("input", () => { offset = +range.value; stop(); });
+    nowBtn.addEventListener("click", () => { offset = 0; stop(); });
+  }
+</script>
+
+<style>
+  .sky {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(32px, 6vw, 80px); align-items: center;
+    padding: clamp(28px, 5vw, 56px); border-radius: 28px; background: var(--g2); border: 1px solid var(--r);
+    position: relative; overflow: hidden;
+  }
+  .sky::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.5;
+    background: radial-gradient(60% 80% at 20% 50%, color-mix(in oklab, var(--sky-in, #1e2560) 60%, transparent), transparent 70%);
+    transition: background 0.6s;
+  }
+  .dome-wrap { position: relative; }
+  .dome { width: 100%; max-width: 440px; height: auto; display: block; margin-inline: auto; overflow: visible; }
+  .grid { fill: none; stroke: color-mix(in oklab, var(--b) 45%, transparent); stroke-width: 0.5; stroke-dasharray: 1.5 2.5; }
+  .stars { fill: #f4efe6; transition: opacity 0.6s; }
+  .track { fill: none; stroke: var(--a); stroke-width: 0.9; stroke-dasharray: 0.5 3; stroke-linecap: round; opacity: 0.7; }
+  .rim { fill: none; stroke: var(--b); stroke-width: 2.4; }
+  .rim2 { fill: none; stroke: color-mix(in oklab, var(--b) 50%, transparent); stroke-width: 0.6; }
+  .ticks { stroke: var(--b); stroke-width: 0.8; }
+  .dirs text { fill: var(--a); font: 500 9px var(--caps); letter-spacing: 0.1em; text-anchor: middle; dominant-baseline: middle; }
+  .body { transition: opacity 0.4s; }
+  .body.down { opacity: 0; }
+  .sun .disc { fill: #f6c64f; }
+  .moon .disc { fill: #2a2f5c; stroke: rgba(244, 239, 230, 0.35); stroke-width: 0.5; }
+  .moon .lit { fill: #f1ead8; }
+  .suhail .gem { fill: #fff6dc; filter: drop-shadow(0 0 3px #f0b93a); }
+  .suhail .halo { fill: none; stroke: var(--a); stroke-width: 0.8; opacity: 0.6; transform-origin: center; animation: sky-pulse 2.6s ease-out infinite; }
+  .suhail .tag { fill: var(--gp); font: 500 7.5px var(--caps); letter-spacing: 0.12em; text-anchor: middle; }
+  @keyframes sky-pulse { 0% { r: 6; opacity: 0.8; } 100% { r: 16; opacity: 0; } }
+
+  .read { position: relative; display: flex; flex-direction: column; gap: 18px; }
+  .read .lede { color: var(--m); max-width: 40ch; }
+  .read .lede :global(b) { color: var(--t); font-weight: 500; }
+  .rows { margin: 4px 0 0; display: grid; gap: 0; }
+  .rows div { display: grid; grid-template-columns: 110px 1fr; gap: 12px; padding: 11px 0; border-top: 1px solid var(--r); font-size: 16px; }
+  .rows div:last-child { border-bottom: 1px solid var(--r); }
+  .rows dt { display: flex; align-items: center; gap: 10px; color: var(--t); }
+  .rows dd { margin: 0; color: var(--m); font-variant-numeric: tabular-nums lining-nums; }
+  .k { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+  .k.sun { background: #f6c64f; box-shadow: 0 0 8px #f0b93a; }
+  .k.moon { background: #f1ead8; }
+  .k.suhail { background: #fff6dc; box-shadow: 0 0 6px #f0b93a; transform: rotate(45deg) scale(0.8); border-radius: 1px; }
+
+  .scrub { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 6px; }
+  .play {
+    display: inline-flex; align-items: center; gap: 10px; cursor: pointer;
+    font: 500 13px var(--caps); letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 11px 18px; border-radius: 999px; border: 1px solid var(--a); background: transparent; color: var(--a);
+    transition: background 0.25s, color 0.25s;
+  }
+  .play:hover { background: var(--a); color: var(--g); }
+  .ic { width: 0; height: 0; border-left: 8px solid currentColor; border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
+  .play[aria-pressed="true"] .ic { width: 8px; height: 10px; border: 0; border-left: 3px solid currentColor; border-right: 3px solid currentColor; }
+  .range { flex: 1; min-width: 160px; display: flex; }
+  .range input { width: 100%; accent-color: var(--a); }
+  .when { font: 500 14px var(--caps); letter-spacing: 0.08em; color: var(--t); min-width: 76px; font-variant-numeric: tabular-nums; }
+  .now { font: 500 12px var(--caps); letter-spacing: 0.12em; text-transform: uppercase; background: none; border: 0; color: var(--m); cursor: pointer; padding: 6px 0; text-decoration: underline; text-underline-offset: 4px; }
+  .now:hover { color: var(--a); }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  @media (max-width: 860px) {
+    .sky { grid-template-columns: 1fr; border-radius: 22px; }
+    .dome { max-width: 340px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .suhail .halo { animation: none; } }
+</style>

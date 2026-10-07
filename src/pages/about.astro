@@ -1,0 +1,41 @@
+---
+import Base from "../layouts/Base.astro";
+import Divider from "../components/Divider.astro";
+import { sections } from "../data/sections";
+---
+<Base title="About" description="Suhail AbuOsba builds systems and dashboards for higher education.">
+  <div class="wrap">
+    <header class="page-h">
+      <span class="lb" data-reveal>About <span class="ar" lang="ar">· عني</span></span>
+      <h1 class="display" data-reveal style="--i:1">Hi, I'm Suhail.</h1>
+      <p class="lede" data-reveal style="--i:2">I make the systems behind a better student experience, and I like it when the data finally makes sense.</p>
+    </header>
+    <div class="page-body">
+      <div class="band-sm"><Divider {...sections.about} /></div>
+      <div class="prose">
+        <p data-reveal>By day I work in higher education: automations, APIs, data pipelines and dashboards that answer questions before anyone has to ask them.</p>
+        <p data-reveal>On the side I help an NGO with community and cultural projects, mostly tech setup and making processes hurt less.</p>
+        <p data-reveal>Off the clock it's 3D printing, a smart home that is smarter than it needs to be, and too much coffee.</p>
+      </div>
+      <aside class="star" data-reveal>
+        <span class="lb">Why the star?</span>
+        <p><span class="ar" lang="ar">سهيل</span> is Canopus, the second-brightest star in the night sky. In Yemen they say that when Suhail rises, the nights cool. The logo is an astrolabe set for Sana'a, with the letters of my name as its star map.</p>
+      </aside>
+      <div class="hello" data-reveal>
+        <span class="lb">Say hello</span>
+        <a class="mail" href="mailto:suhail@abuosba.com">suhail@abuosba.com</a>
+        <a class="more" href="https://www.linkedin.com/in/abuosba" rel="me">LinkedIn</a>
+      </div>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .band-sm { padding-block: clamp(48px, 7vw, 80px) 0; }
+  .star { margin-top: 48px; padding: 28px 30px; border-left: 2px solid var(--a); background: var(--g2); border-radius: 0 16px 16px 0; display: grid; gap: 10px; }
+  .star p { color: var(--m); font-size: 18px; line-height: 1.6; max-width: 56ch; }
+  .star .ar { color: var(--t); font-size: 1.1em; }
+  .hello { margin-top: clamp(56px, 8vw, 96px); display: grid; justify-items: start; gap: 14px; }
+  .mail { font: 500 clamp(28px, 5vw, 46px)/1.1 var(--serif); text-decoration: none; background: linear-gradient(var(--a), var(--a)) left bottom / 0 2px no-repeat; transition: background-size 0.4s var(--ease), color 0.2s; padding-bottom: 4px; }
+  .mail:hover { background-size: 100% 2px; }
+</style>

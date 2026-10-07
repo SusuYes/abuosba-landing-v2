@@ -1,0 +1,15 @@
+---
+import Base from "../../layouts/Base.astro";
+---
+<Base title="العربية">
+  <section class="soon wrap" lang="ar" dir="rtl">
+    <h1 class="display ar" data-reveal>سهيل</h1>
+    <p class="lede ar" data-reveal style="--i:1">النسخة العربية قادمة قريبًا.</p>
+    <p lang="en" dir="ltr" data-reveal style="--i:2"><a class="more" href="/">English</a></p>
+  </section>
+</Base>
+
+<style>
+  .soon { min-height: 60vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 18px; }
+  .soon .display { font-family: var(--arabic); font-weight: 600; }
+</style>

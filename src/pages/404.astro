@@ -1,0 +1,18 @@
+---
+import Base from "../layouts/Base.astro";
+import Qamariya from "../components/Qamariya.astro";
+---
+<Base title="Not found">
+  <section class="lost wrap">
+    <div data-reveal><Qamariya size={320} /></div>
+    <span class="lb" data-reveal style="--i:1">404</span>
+    <h1 class="display" data-reveal style="--i:2">Lost among the stars.</h1>
+    <p class="lede" data-reveal style="--i:3">This page isn't here, or it moved.</p>
+    <div class="btns" data-reveal style="--i:4"><a class="btn solid" href="/">Take me home</a></div>
+  </section>
+</Base>
+
+<style>
+  .lost { min-height: 70vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 20px; padding-block: 80px; }
+  .lost > div:first-child { width: 100%; }
+</style>

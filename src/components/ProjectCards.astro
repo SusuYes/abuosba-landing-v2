@@ -1,0 +1,16 @@
+---
+import Window from "./Window.astro";
+import { projects } from "../data/work";
+---
+<ul class="cards">
+  {projects.map((p, i) => (
+    <li data-reveal style={`--i:${i}`}>
+      <a class="card" href={`/work/${p.slug}/`}>
+        <Window />
+        <h3>{p.title}</h3>
+        <p>{p.line}</p>
+        <span class="go">Read</span>
+      </a>
+    </li>
+  ))}
+</ul>
