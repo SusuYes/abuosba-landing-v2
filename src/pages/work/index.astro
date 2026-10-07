@@ -1,27 +1,19 @@
 ---
 import Base from "../../layouts/Base.astro";
 import Divider from "../../components/Divider.astro";
-import Window from "../../components/Window.astro";
-import { projects } from "../../data/work";
+import ProjectCards from "../../components/ProjectCards.astro";
 import { sections } from "../../data/sections";
 ---
-<Base title="Work" description="Things I've built.">
-  <div class="page single">
-    <article>
-      <div class="lb">Work</div>
-      <h1 class="display">Things I've built</h1>
-      <p class="lede">Systems, data and tools, mostly for students and the people who look after them.</p>
+<Base title="Work" description="Systems, automations and dashboards Suhail AbuOsba has built for higher education.">
+  <div class="wrap">
+    <header class="page-h">
+      <span class="lb" data-reveal>Work <span class="ar" lang="ar">· عمل</span></span>
+      <h1 class="display" data-reveal style="--i:1">Things I've built that people still use.</h1>
+      <p class="lede" data-reveal style="--i:2">Systems, data and tools, mostly for students and the people who look after them.</p>
+    </header>
+    <div class="band">
       <Divider {...sections.work} />
-      <ul class="windows">
-        {projects.map((p) => (
-          <li>
-            <Window />
-            <span class="t"><a href={`/work/${p.slug}/`}>{p.title}</a></span>
-            <span class="y"></span>
-            <span class="d">{p.line}</span>
-          </li>
-        ))}
-      </ul>
-    </article>
+      <ProjectCards />
+    </div>
   </div>
 </Base>

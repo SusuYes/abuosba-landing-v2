@@ -5,20 +5,45 @@ import { projects, type Project } from "../../data/work";
 import { sections } from "../../data/sections";
 
 export function getStaticPaths() {
-  return projects.map((p) => ({ params: { slug: p.slug }, props: { project: p } }));
+  return projects.map((p, i) => ({ params: { slug: p.slug }, props: { project: p, next: projects[(i + 1) % projects.length] } }));
 }
-const { project } = Astro.props as { project: Project };
+const { project, next } = Astro.props as { project: Project; next: Project };
 ---
 <Base title={project.title} description={project.line}>
-  <div class="page single">
-    <article>
-      <div class="lb"><a href="/work/">Work</a></div>
-      <h1 class="display">{project.title}</h1>
-      <p class="lede">{project.line}</p>
-      <Divider {...sections.work} />
+  <div class="wrap">
+    <header class="page-h">
+      <a class="lb back" href="/work/" data-reveal>← Work</a>
+      <h1 class="display" data-reveal style="--i:1">{project.title}</h1>
+      <p class="lede" data-reveal style="--i:2">{project.line}</p>
+      <ul class="tags" data-reveal style="--i:3">{project.tags.map((t) => <li>{t}</li>)}</ul>
+    </header>
+    <div class="page-body">
+      <div class="band-sm"><Divider {...sections.work} /></div>
       <div class="prose">
-        {project.body.map((para) => <p>{para}</p>)}
+        {project.body.map((para, i) => <p data-reveal style={`--i:${i}`}>{para}</p>)}
       </div>
-    </article>
+      <a class="next" href={`/work/${next.slug}/`} data-reveal>
+        <span class="lb">Next</span>
+        <span class="t">{next.title}</span>
+        <span class="d">{next.line}</span>
+      </a>
+    </div>
   </div>
 </Base>
+
+<style>
+  .back { text-decoration: none; }
+  .tags { list-style: none; padding: 0; margin: 26px 0 0; display: flex; gap: 10px; flex-wrap: wrap; }
+  .tags li { font: 500 12px var(--caps); letter-spacing: 0.12em; text-transform: uppercase; color: var(--gp); border: 1px solid var(--r); border-radius: 999px; padding: 6px 14px; }
+  .band-sm { padding-block: clamp(48px, 7vw, 80px) 0; }
+  .next {
+    display: grid; gap: 8px; margin-top: clamp(56px, 8vw, 96px); padding: 32px; border-radius: 18px;
+    background: var(--g2); border: 1px solid var(--r); text-decoration: none;
+    transition: transform 0.35s var(--ease), border-color 0.35s;
+  }
+  .next:hover { color: var(--t); transform: translateY(-4px); border-color: color-mix(in oklab, var(--b) 70%, transparent); }
+  .next .t { font: 500 30px/1.1 var(--serif); }
+  .next .t::after { content: " →"; color: var(--a); display: inline-block; transition: transform 0.25s var(--ease); }
+  .next:hover .t::after { transform: translateX(6px); }
+  .next .d { color: var(--m); font-size: 17px; }
+</style>

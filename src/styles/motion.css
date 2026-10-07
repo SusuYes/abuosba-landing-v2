@@ -1,0 +1,79 @@
+/* Motion, from the brand book: the landing (drawn, then hoisted on an arc), Sunrise for the qamariya,
+   Glazed for the dividers, and a gentle rise for everything else as it scrolls into view.
+   Everything is gated on .js, so the page is whole without scripts, and switched off for reduced motion. */
+
+@keyframes mo-draw { 0% { stroke-dashoffset: 1.08; } 100% { stroke-dashoffset: 0; } }
+@keyframes mo-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes mo-up { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+@keyframes mo-rise { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: none; } }
+@keyframes mo-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes mo-barup { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes mo-glaze { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes mo-glow { from { filter: drop-shadow(0 0 0 rgba(240, 185, 58, 0)); } to { filter: drop-shadow(0 0 10px rgba(240, 185, 58, 0.35)); } }
+@keyframes mo-paneglow { from { box-shadow: 0 0 0 transparent; } to { box-shadow: 0 0 12px color-mix(in oklab, var(--c) 55%, transparent); } }
+
+/* ---- a gentle rise as things scroll into view ---- */
+.js [data-reveal] { opacity: 0; }
+.js [data-reveal].in { animation: mo-up 0.9s var(--ease) both; animation-delay: calc(var(--i, 0) * 110ms); }
+
+/* ---- staged pieces wait, paused, until they are in view (.run) ---- */
+.js [data-mo] *, .js [data-mo] *::before, .js [data-mo] *::after { animation-play-state: paused; }
+.js [data-mo].run *, .js [data-mo].run *::before, .js [data-mo].run *::after { animation-play-state: running; }
+
+/* ---- qamariya · Sunrise: the frame draws, then the glass lights left to right, the centre last ---- */
+.js .sunrise .gl-gyp > * { stroke-dasharray: 1 3; animation: mo-draw 0.7s cubic-bezier(0.45, 0, 0.2, 1) both; animation-delay: calc(var(--pg, 0ms) + var(--t) * 0.5ms); }
+.js .sunrise .gl-glass { animation: mo-fade 0.3s cubic-bezier(0.2, 0.8, 0.3, 1) both; animation-delay: calc(var(--pg, 0ms) + 800ms + var(--a) * 150ms + var(--r) * 40ms); }
+.js .sunrise .gl-glass[style*="--r:0"] { animation-delay: calc(var(--pg, 0ms) + 2000ms); }
+.js .sunrise .qam-big { animation: mo-glow 1s ease-out both; animation-delay: calc(var(--pg, 0ms) + 1900ms); }
+
+/* ---- divider · Glazed: rules and bars draw, then each pane fills from the bottom, right to left ---- */
+.js .dv[data-mo] .rl { animation: mo-grow 0.6s cubic-bezier(0.3, 0, 0.2, 1) both; animation-delay: var(--dd, 0ms); }
+.js .dv[data-mo] .row > .rl:first-child { transform-origin: right center; }
+.js .dv[data-mo] .row > .rl:last-child { transform-origin: left center; }
+.js .dv[data-mo] .bar { transform-origin: bottom center; animation: mo-barup 0.35s ease-out both; animation-delay: calc(var(--dd, 0ms) + 400ms); }
+.js .dv[data-mo] .pane {
+  position: relative; background: transparent;
+  animation: mo-fade 0.25s ease-out both, mo-paneglow 0.6s ease-out both;
+  animation-delay: calc(var(--dd, 0ms) + 600ms + var(--i) * 120ms), calc(var(--dd, 0ms) + 1150ms + var(--i) * 120ms);
+}
+.js .dv[data-mo] .pane::before {
+  content: ""; position: absolute; inset: 0; border-radius: 16px 16px 1px 1px; background: var(--c);
+  animation: mo-glaze 0.45s cubic-bezier(0.4, 0, 0.2, 1) both; animation-delay: calc(var(--dd, 0ms) + 700ms + var(--i) * 120ms);
+}
+.js .dv[data-mo] .pane span { position: relative; animation: mo-fade 0.3s ease-out both; animation-delay: calc(var(--dd, 0ms) + 1150ms + var(--i) * 120ms); }
+.js .dv[data-mo] .gloss { animation: mo-fade 0.5s ease-out both; animation-delay: calc(var(--dd, 0ms) + 1350ms); }
+
+/* ---- the landing, first visit only: the astrolabe draws itself, its rete swings round to tonight's sky over
+   Sana'a, then it is hoisted on an arc into the header while the finished page fades in behind it ---- */
+@keyframes ia-draw { 0% { stroke-dashoffset: 1.08; } 100% { stroke-dashoffset: 0; } }
+@keyframes ia-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes ia-wipe-l { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes ia-wipe-r { from { clip-path: inset(0 0 0 100%); } to { clip-path: inset(0 0 0 0); } }
+@keyframes ia-flash { 0% { r: 6px; stroke-width: 5px; opacity: 0; } 6% { opacity: 1; } 100% { r: 52px; stroke-width: 0px; opacity: 0; } }
+@keyframes ia-swing { from { transform: rotate(0deg); } to { transform: rotate(var(--swing, 0deg)); } }
+@keyframes ia-hoist-arc{ 0%{ transform:translate(calc(-50% + var(--txc) * 0.0000 + 0.00px), calc(var(--ty) * 0.0000)) scale(calc(1 - (1 - var(--sc)) * 0.0000)) rotate(0.000deg) } 2%{ transform:translate(calc(-50% + var(--txc) * 0.0004 + 0.06px), calc(var(--ty) * 0.0004)) scale(calc(1 - (1 - var(--sc)) * 0.0004)) rotate(0.018deg) } 4%{ transform:translate(calc(-50% + var(--txc) * 0.0037 + 0.46px), calc(var(--ty) * 0.0037)) scale(calc(1 - (1 - var(--sc)) * 0.0037)) rotate(0.132deg) } 6%{ transform:translate(calc(-50% + var(--txc) * 0.0126 + 1.58px), calc(var(--ty) * 0.0126)) scale(calc(1 - (1 - var(--sc)) * 0.0126)) rotate(0.415deg) } 8%{ transform:translate(calc(-50% + var(--txc) * 0.0287 + 3.61px), calc(var(--ty) * 0.0287)) scale(calc(1 - (1 - var(--sc)) * 0.0287)) rotate(0.869deg) } 10%{ transform:translate(calc(-50% + var(--txc) * 0.0535 + 6.69px), calc(var(--ty) * 0.0535)) scale(calc(1 - (1 - var(--sc)) * 0.0535)) rotate(1.468deg) } 12%{ transform:translate(calc(-50% + var(--txc) * 0.0870 + 10.80px), calc(var(--ty) * 0.0870)) scale(calc(1 - (1 - var(--sc)) * 0.0870)) rotate(2.123deg) } 14%{ transform:translate(calc(-50% + var(--txc) * 0.1288 + 15.74px), calc(var(--ty) * 0.1288)) scale(calc(1 - (1 - var(--sc)) * 0.1288)) rotate(2.697deg) } 16%{ transform:translate(calc(-50% + var(--txc) * 0.1788 + 21.30px), calc(var(--ty) * 0.1788)) scale(calc(1 - (1 - var(--sc)) * 0.1788)) rotate(3.019deg) } 18%{ transform:translate(calc(-50% + var(--txc) * 0.2315 + 26.60px), calc(var(--ty) * 0.2315)) scale(calc(1 - (1 - var(--sc)) * 0.2315)) rotate(2.891deg) } 20%{ transform:translate(calc(-50% + var(--txc) * 0.2859 + 31.29px), calc(var(--ty) * 0.2859)) scale(calc(1 - (1 - var(--sc)) * 0.2859)) rotate(2.215deg) } 22%{ transform:translate(calc(-50% + var(--txc) * 0.3404 + 35.07px), calc(var(--ty) * 0.3404)) scale(calc(1 - (1 - var(--sc)) * 0.3404)) rotate(1.022deg) } 24%{ transform:translate(calc(-50% + var(--txc) * 0.3948 + 37.84px), calc(var(--ty) * 0.3948)) scale(calc(1 - (1 - var(--sc)) * 0.3948)) rotate(-0.532deg) } 26%{ transform:translate(calc(-50% + var(--txc) * 0.4510 + 39.53px), calc(var(--ty) * 0.4510)) scale(calc(1 - (1 - var(--sc)) * 0.4510)) rotate(-2.286deg) } 28%{ transform:translate(calc(-50% + var(--txc) * 0.5054 + 39.99px), calc(var(--ty) * 0.5054)) scale(calc(1 - (1 - var(--sc)) * 0.5054)) rotate(-3.875deg) } 30%{ transform:translate(calc(-50% + var(--txc) * 0.5599 + 39.29px), calc(var(--ty) * 0.5599)) scale(calc(1 - (1 - var(--sc)) * 0.5599)) rotate(-5.108deg) } 32%{ transform:translate(calc(-50% + var(--txc) * 0.6143 + 37.45px), calc(var(--ty) * 0.6143)) scale(calc(1 - (1 - var(--sc)) * 0.6143)) rotate(-5.782deg) } 34%{ transform:translate(calc(-50% + var(--txc) * 0.6688 + 34.51px), calc(var(--ty) * 0.6688)) scale(calc(1 - (1 - var(--sc)) * 0.6688)) rotate(-5.780deg) } 36%{ transform:translate(calc(-50% + var(--txc) * 0.7250 + 30.42px), calc(var(--ty) * 0.7250)) scale(calc(1 - (1 - var(--sc)) * 0.7250)) rotate(-5.071deg) } 38%{ transform:translate(calc(-50% + var(--txc) * 0.7794 + 25.55px), calc(var(--ty) * 0.7794)) scale(calc(1 - (1 - var(--sc)) * 0.7794)) rotate(-3.835deg) } 40%{ transform:translate(calc(-50% + var(--txc) * 0.8339 + 19.94px), calc(var(--ty) * 0.8339)) scale(calc(1 - (1 - var(--sc)) * 0.8339)) rotate(-2.319deg) } 42%{ transform:translate(calc(-50% + var(--txc) * 0.8883 + 13.75px), calc(var(--ty) * 0.8883)) scale(calc(1 - (1 - var(--sc)) * 0.8883)) rotate(-0.856deg) } 44%{ transform:translate(calc(-50% + var(--txc) * 0.9404 + 7.45px), calc(var(--ty) * 0.9404)) scale(calc(1 - (1 - var(--sc)) * 0.9404)) rotate(0.633deg) } 46%{ transform:translate(calc(-50% + var(--txc) * 0.9796 + 2.57px), calc(var(--ty) * 0.9796)) scale(calc(1 - (1 - var(--sc)) * 0.9796)) rotate(3.630deg) } 48%{ transform:translate(calc(-50% + var(--txc) * 0.9971 + 0.37px), calc(var(--ty) * 0.9971)) scale(calc(1 - (1 - var(--sc)) * 0.9971)) rotate(7.539deg) } 50%{ transform:translate(calc(-50% + var(--txc) * 1.0000 + 0.00px), calc(var(--ty) * 1.0000)) scale(calc(1 - (1 - var(--sc)) * 1.0000)) rotate(9.080deg) } 52%{ transform:translate(calc(-50% + var(--txc) * 1.0000 + 0.00px), calc(var(--ty) * 1.0000)) scale(calc(1 - (1 - var(--sc)) * 1.0000)) rotate(5.751deg) } 54%{ transform:translate(calc(-50% + var(--txc) * 1.0000 + 0.00px), calc(var(--ty) * 1.0000)) scale(calc(1 - (1 - var(--sc)) * 1.0000)) rotate(0.129deg) } 56%{ transform:translate(calc(-50% + var(--txc) * 1.0000 + 0.00px), calc(var(--ty) * 1.0000)) scale(calc(1 - (1 - var(--sc)) * 1.0000)) rotate(-4.212deg) } 58%{ transform:translate(calc(-50% + var(--txc) * 1.0000 + 0.00px), calc(var(--ty) * 1.0000)) scale(calc(1 - (1 - var(--sc)) * 1.0000)) rotate(-5.008deg) } 60%{ transform:translate(calc(-50% + var(--txc) * 1.0000 + 0.00px), calc(var(--ty) * 1.0000)) scale(calc(1 - (1 - var(--sc)) * 1.0000)) rotate(-2.860deg) } 62%{ transform:translate(calc(-50% + var(--txc) * 1.0000 + 0.00px), calc(var(--ty) * 1.0000)) scale(calc(1 - (1 - var(--sc)) * 1.0000)) rotate(0.305deg) } 64%{ transform:translate(calc(-50% + var(--txc) * 1.0000 + 0.00px), calc(var(--ty) * 1.0000)) scale(calc(1 - (1 - var(--sc)) * 1.0000)) rotate(2.494deg) } 66%{ transform:translate(calc(-50% + var(--txc) * 1.0000 + 0.00px), calc(var(--ty) * 1.0000)) scale(calc(1 - (1 - var(--sc)) * 1.0000)) rotate(2.735deg) } 68%{ transform:translate(calc(-50% + var(--txc) * 1.0000 + 0.00px), calc(var(--ty) * 1.0000)) scale(calc(1 - (1 - var(--sc)) * 1.0000)) rotate(1.387deg) } 70%{ transform:translate(calc(-50% + var(--txc) * 1.0000 + 0.00px), calc(var(--ty) * 1.0000)) scale(calc(1 - (1 - var(--sc)) * 1.0000)) rotate(-0.376deg) } 72%{ transform:translate(calc(-50% + var(--txc) * 1.0000 + 0.00px), calc(var(--ty) * 1.0000)) scale(calc(1 - (1 - var(--sc)) * 1.0000)) rotate(-1.483deg) } 74%{ transform:translate(calc(-50% + var(--txc) * 1.0000 + 0.00px), calc(var(--ty) * 1.0000)) scale(calc(1 - (1 - var(--sc)) * 1.0000)) rotate(-1.494deg) } 76%{ transform:translate(calc(-50% + var(--txc) * 1.0000 + 0.00px), calc(var(--ty) * 1.0000)) scale(calc(1 - (1 - var(--sc)) * 1.0000)) rotate(-0.652deg) } 78%{ transform:translate(calc(-50% + var(--txc) * 1.0000 + 0.00px), calc(var(--ty) * 1.0000)) scale(calc(1 - (1 - var(--sc)) * 1.0000)) rotate(0.320deg) } 80%{ transform:translate(calc(-50% + var(--txc) * 1.0000 + 0.00px), calc(var(--ty) * 1.0000)) scale(calc(1 - (1 - var(--sc)) * 1.0000)) rotate(0.868deg) } 82%{ transform:translate(calc(-50% + var(--txc) * 1.0000 + 0.00px), calc(var(--ty) * 1.0000)) scale(calc(1 - (1 - var(--sc)) * 1.0000)) rotate(0.801deg) } 84%{ transform:translate(calc(-50% + var(--txc) * 1.0000 + 0.00px), calc(var(--ty) * 1.0000)) scale(calc(1 - (1 - var(--sc)) * 1.0000)) rotate(0.312deg) } 86%{ transform:translate(calc(-50% + var(--txc) * 1.0000 + 0.00px), calc(var(--ty) * 1.0000)) scale(calc(1 - (1 - var(--sc)) * 1.0000)) rotate(-0.237deg) } 88%{ transform:translate(calc(-50% + var(--txc) * 1.0000 + 0.00px), calc(var(--ty) * 1.0000)) scale(calc(1 - (1 - var(--sc)) * 1.0000)) rotate(-0.502deg) } 90%{ transform:translate(calc(-50% + var(--txc) * 1.0000 + 0.00px), calc(var(--ty) * 1.0000)) scale(calc(1 - (1 - var(--sc)) * 1.0000)) rotate(-0.424deg) } 92%{ transform:translate(calc(-50% + var(--txc) * 1.0000 + 0.00px), calc(var(--ty) * 1.0000)) scale(calc(1 - (1 - var(--sc)) * 1.0000)) rotate(-0.134deg) } 94%{ transform:translate(calc(-50% + var(--txc) * 1.0000 + 0.00px), calc(var(--ty) * 1.0000)) scale(calc(1 - (1 - var(--sc)) * 1.0000)) rotate(0.156deg) } 96%{ transform:translate(calc(-50% + var(--txc) * 1.0000 + 0.00px), calc(var(--ty) * 1.0000)) scale(calc(1 - (1 - var(--sc)) * 1.0000)) rotate(0.287deg) } 98%{ transform:translate(calc(-50% + var(--txc) * 1.0000 + 0.00px), calc(var(--ty) * 1.0000)) scale(calc(1 - (1 - var(--sc)) * 1.0000)) rotate(0.222deg) } 100%{ transform:translate(calc(-50% + var(--txc) * 1.0000 + 0.00px), calc(var(--ty) * 1.0000)) scale(calc(1 - (1 - var(--sc)) * 1.0000)) rotate(0.052deg) } }
+html.intro-on { --st0: 4650ms; --sw: 7250ms; --sd: 2600ms; }
+.intro { position: fixed; inset: 0; z-index: 60; pointer-events: none; }
+.intro .ia-big {
+  position: absolute; left: 50%; top: var(--iy, 18vh); width: var(--iw, 300px); transform-origin: 50% 0;
+  animation: ia-hoist-arc var(--sd) linear both, ia-out 0.2s linear forwards; animation-delay: var(--st0), var(--sw);
+}
+.intro .ia-big svg { width: 100%; height: auto; display: block; }
+.ia-draw .tg { animation: mo-fade var(--d) ease-out both; animation-delay: var(--t0); }
+.ia-draw .tw-l { animation: ia-wipe-l var(--d) ease-in-out both; animation-delay: var(--t0); }
+.ia-draw .tw-r { animation: ia-wipe-r var(--d) ease-in-out both; animation-delay: var(--t0); }
+.ia-draw .mkp { stroke-dasharray: 1 3; animation: ia-draw var(--d) ease-in-out both; animation-delay: var(--t0); }
+.ia-draw .mkr { animation: mo-fade var(--d) ease-out both; animation-delay: var(--t0); }
+.ia-draw .fl { animation: ia-flash var(--d) ease-out both; animation-delay: var(--t0); }
+.ia-draw .sw { animation: ia-swing var(--d) cubic-bezier(0.45, 0, 0.25, 1) both; animation-delay: var(--t0); }
+/* while it draws, the page waits; it appears whole behind the hoist, and the header mark takes over as it lands */
+html.intro-on .hd nav, html.intro-on .brick, html.intro-on main, html.intro-on .ft { animation: mo-fade 0.9s ease-out both; animation-delay: calc(var(--st0) + 250ms); }
+html.intro-on .hd .mark { animation: mo-fade 0.2s linear both; animation-delay: var(--sw); }
+:is(html.intro-on, html.intro-done) .hero [data-reveal] { opacity: 1; animation: none; }
+:is(html.intro-on, html.intro-done) .hero [data-mo] *, :is(html.intro-on, html.intro-done) .hero [data-mo] *::before { animation: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal] { opacity: 1; }
+  .js [data-reveal].in, .js [data-mo] *, .js [data-mo] *::before, .js [data-mo] *::after { animation: none !important; }
+  .intro { display: none; }
+}
