@@ -1,0 +1,104 @@
+---
+/* Every page of the site is this one document, opened at a different place: the address decides which page shows
+   (the page script reads it) and the language (/ar/ is Arabic, right to left). What differs per address here is
+   what a browser or a search engine sees before the script runs: the title, description, links between the two
+   languages, and a plain version of the page for readers without scripts. */
+import "@fontsource/alegreya/400.css";
+import "@fontsource/alegreya/400-italic.css";
+import "@fontsource/alegreya/500.css";
+import "@fontsource/alegreya/500-italic.css";
+import "@fontsource/alegreya/700.css";
+import "@fontsource/alegreya-sans-sc/500.css";
+import "@fontsource/alegreya-sans-sc/700.css";
+import "@fontsource/alegreya-sans/400.css";
+import "@fontsource/alegreya-sans/500.css";
+import "@fontsource/alegreya-sans/700.css";
+import "@fontsource/noto-naskh-arabic/400.css";
+import "@fontsource/noto-naskh-arabic/600.css";
+import "@fontsource/noto-naskh-arabic/700.css";
+import "../site/common.css";
+import "../site/home.css";
+import "../site/welcome.css";
+import "../site/work.css";
+import Front from "../components/Front.astro";
+import drawSvg from "../assets/astrolabe-draw.svg?raw";
+import { file } from "../lib/bundle";
+import { siteData } from "../lib/thoughts";
+import { title as pageTitle, description as pageDesc, type Lang } from "../lib/site";
+
+interface Props {
+  lang: Lang;
+  /** the place, as the page script names it; null for the 404 page */
+  key: string | null;
+  /** the same page in the other language, when there is one */
+  other?: string;
+  /** a thought's or a build's own name, for the title */
+  own?: string;
+  dek?: string;
+}
+const { lang, key, other, own, dek } = Astro.props;
+const ar = lang === "ar";
+const otherLang = ar ? "en" : "ar";
+const front = key === "";
+
+// the astrolabe: the top bar's mark; the intro's own copy, drawn a quarter faster; About's larger one
+const draw = drawSvg;
+const draw3 = drawSvg.replace(/ad-/g, "ag-").replace(/--t0:(\d+)ms;--d:(\d+)ms/g, (_, a, b) => `--t0:${Math.trunc(+a * 0.72)}ms;--d:${Math.trunc(+b * 0.72)}ms`);
+const draw4 = drawSvg.replace(/ad-/g, "ah-");
+
+const data = JSON.stringify(await siteData()).replace(/</g, "\\u003c");
+const title = pageTitle(key, lang, own);
+const description = pageDesc(key, lang, dek);
+const canonical = key == null ? undefined : new URL(Astro.url.pathname, Astro.site).href;
+const otherHref = other ?? (ar ? "/" : "/ar/");
+// without scripts: a plain column over the sky (inner pages hide the front behind it)
+const nsCss = (front ? "" : "#page, .mwork { display: none; } ") + ".ns { position: relative; z-index: 10; max-width: 640px; margin: 0 auto; padding: 120px 24px 80px; } .ns h1 { font: italic 500 40px/1.15 var(--serif); } .ns a { color: var(--a); } .ns li { margin: .5em 0; }";
+---
+<!doctype html>
+<html lang={lang} dir={ar ? "rtl" : "ltr"}>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{title}</title>
+  <meta name="description" content={description}>
+  <meta name="theme-color" content="#060818">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  {canonical && <link rel="canonical" href={canonical}>}
+  {canonical && <link rel="alternate" hreflang={lang} href={canonical}>}
+  {canonical && other && <link rel="alternate" hreflang={otherLang} href={new URL(other, Astro.site).href}>}
+  <meta property="og:title" content={title}>
+  <meta property="og:description" content={description}>
+  <meta property="og:type" content={key && key.startsWith("note/") ? "article" : "website"}>
+  {canonical && <meta property="og:url" content={canonical}>}
+  <meta property="og:locale" content={ar ? "ar" : "en_GB"}>
+  <script is:inline>
+    // until the page script has set the page (and its language), keep the half-made page out of sight
+    var d = document.documentElement; d.classList.add("boot");
+    setTimeout(function () { d.classList.remove("boot"); }, 4000);
+    // the front page in the language last chosen
+    try { if (location.pathname === "/" && localStorage.getItem("ao-lang") === "ar") location.replace("/ar/" + location.search); } catch (e) {}
+  </script>
+  {key == null && <script is:inline>
+    // a lost address under /ar/ gets the lost page in Arabic
+    if (/^\/ar(\/|$)/.test(location.pathname)) { document.documentElement.lang = "ar"; document.documentElement.dir = "rtl"; }
+  </script>}
+  <style is:inline>.boot #top, .boot #page, .boot .mwork, .boot #reader, .boot #work { visibility: hidden; }</style>
+</head>
+<body>
+  <Front lang={lang} other={otherHref} draw={draw} />
+  <div class="dawn" aria-hidden="true"><div class="sun"></div></div>
+  {front && (
+    <div id="intro" aria-hidden="true"><div class="ib" id="ib"><Fragment set:html={draw3} /></div><p class="cap"><b>سُهَيْل</b>Suhail AbuOsba · Sana'a</p><button class="skip" type="button">Skip</button></div>
+  )}
+  <template id="tpl-mark"><Fragment set:html={draw4} /></template>
+  <slot />
+  <noscript>
+    <style is:inline set:html={nsCss}></style>
+    <div class="ns"><slot name="noscript" /></div>
+  </noscript>
+  <script is:inline type="application/json" id="site-data" set:html={data}></script>
+  <script is:inline src={`/js/${file}.js`}></script>
+</body>
+</html>

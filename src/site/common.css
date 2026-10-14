@@ -1,0 +1,83 @@
+:root {
+  color-scheme: dark;
+  --bg: #050716; --bg2: #0b0d26; --t: #f1ece2; --m: #a9a39a; --a: #f0b93a; --pale: #efcb94; --line: rgba(241,236,226,.14);
+  --paper: #f2ede3; --paper2: #e9e2d4; --ink: #1c1b2e; --ink2: #5d5a66; --hair: rgba(28,27,46,.14); --brass: #a8792c;
+  --serif: "Alegreya", Georgia, serif; --caps: "Alegreya Sans SC", "Alegreya", sans-serif; --ar: "Noto Naskh Arabic", serif;
+  --ease: cubic-bezier(.2, .8, .2, 1); --gut: clamp(18px, 4vw, 56px);
+  --top: calc(clamp(16px, 3vh, 28px) + env(safe-area-inset-top, 0px));
+  --bot: calc(clamp(14px, 2.6vh, 24px) + env(safe-area-inset-bottom, 0px));
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--t); font: 400 17px/1.5 var(--serif); overflow: hidden; -webkit-font-smoothing: antialiased; }
+a, button { color: inherit; font: inherit; }
+button { background: none; border: 0; padding: 0; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--a); outline-offset: 3px; border-radius: 2px; }
+h1, h2, h3, p, ul, ol, dl, dd, figure { margin: 0; }
+ul, ol { list-style: none; padding: 0; }
+
+#sky { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+
+/* the astrolabe drawing itself */
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes ia-draw { 0% { stroke-dashoffset: 1.08; } 100% { stroke-dashoffset: 0; } }
+@keyframes ia-wipe-l { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes ia-wipe-r { from { clip-path: inset(0 0 0 100%); } to { clip-path: inset(0 0 0 0); } }
+@keyframes ia-flash { 0% { r: 6px; stroke-width: 5px; opacity: 0; } 6% { opacity: 1; } 100% { r: 52px; stroke-width: 0px; opacity: 0; } }
+@keyframes ia-swing { from { transform: rotate(0deg); } to { transform: rotate(var(--swing, 0deg)); } }
+.ia-draw .tg { animation: fade var(--d) ease-out both; animation-delay: var(--t0); }
+.ia-draw .tw-l { animation: ia-wipe-l var(--d) ease-in-out both; animation-delay: var(--t0); }
+.ia-draw .tw-r { animation: ia-wipe-r var(--d) ease-in-out both; animation-delay: var(--t0); }
+.ia-draw .mkp { stroke-dasharray: 1 3; animation: ia-draw var(--d) ease-in-out both; animation-delay: var(--t0); }
+.ia-draw .mkr { animation: fade var(--d) ease-out both; animation-delay: var(--t0); }
+.ia-draw .fl { animation: ia-flash var(--d) ease-out both; animation-delay: var(--t0); }
+.ia-draw .sw { animation: ia-swing var(--d) cubic-bezier(.45,0,.25,1) both; animation-delay: var(--t0); }
+/* a mark that is already drawn, and always upright */
+.still .ia-draw, .still .ia-draw * { animation-duration: .01ms !important; animation-delay: 0s !important; }
+.still svg, .ib svg { width: 100%; height: auto; display: block; overflow: visible; }
+
+/* the welcome */
+#intro { position: fixed; z-index: 60; inset: 0; display: grid; place-items: center; cursor: pointer; }
+#intro::before { content: ""; position: absolute; inset: 0; background: radial-gradient(60% 60% at 50% 45%, rgba(14,14,40,.94), rgba(5,7,22,.99)); transition: opacity .9s var(--ease); }
+#intro .ib { position: relative; width: min(52vmin, 360px); transform-origin: 0 0; will-change: transform; }
+#intro .cap { position: absolute; left: 0; right: 0; top: calc(50% + min(30vmin, 210px) + 18px); text-align: center; font: 500 11px var(--caps); letter-spacing: .32em; text-transform: uppercase; color: rgba(241,236,226,.66); animation: fade 1.2s ease 1.5s both; transition: opacity .35s; }
+#intro .cap b { display: block; margin-bottom: 4px; font: 600 22px var(--ar); letter-spacing: 0; color: var(--a); }
+#intro .skip { position: absolute; right: var(--gut); bottom: var(--bot); font: 500 11px var(--caps); letter-spacing: .2em; text-transform: uppercase; color: rgba(241,236,226,.42); transition: opacity .35s; }
+#intro .skip:hover { color: var(--a); }
+#intro.fly { pointer-events: none; }
+#intro.fly::before { opacity: 0; }
+#intro.fly .ib { transition: transform 1.05s cubic-bezier(.65, 0, .25, 1); }
+#intro.fly .cap, #intro.fly .skip { opacity: 0; animation: none; }
+body.intro .land, body.landing .land { opacity: 0; }
+.enter { animation: rise .9s var(--ease) both; animation-delay: calc(var(--i, 0) * 90ms + 250ms); }
+body.intro .enter { animation-play-state: paused; opacity: 0; }
+
+/* shared bits */
+.logo { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; }
+.logo .mk { width: 34px; flex: none; }
+.logo .nm { font: 700 12.5px/1.25 var(--caps); letter-spacing: .22em; text-transform: uppercase; color: var(--t); }
+.logo .nm i { display: block; font: 400 10.5px var(--caps); letter-spacing: .2em; font-style: normal; color: var(--m); }
+.k { font: 700 11px var(--caps); letter-spacing: .24em; text-transform: uppercase; display: flex; align-items: center; gap: 10px; color: var(--a); }
+.k b { font: 600 15px/1 var(--ar); letter-spacing: 0; }
+.live { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #7fd18b; box-shadow: 0 0 0 0 rgba(127,209,139,.5); animation: pulse 2.4s infinite; vertical-align: middle; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(127,209,139,.55); } 70% { box-shadow: 0 0 0 8px rgba(127,209,139,0); } 100% { box-shadow: 0 0 0 0 rgba(127,209,139,0); } }
+mark.tbd { background: rgba(240,185,58,.14); color: inherit; padding: 0 3px; border-bottom: 1px dashed currentColor; border-radius: 2px; }
+.paper mark.tbd { background: rgba(168,121,44,.15); border-bottom-color: var(--brass); }
+
+/* tiny live pictures of each build */
+@keyframes dotfill { 0%, 8% { fill: var(--dot0, rgba(28,27,46,.14)); } 14%, 80% { fill: var(--dot1, var(--brass)); } 92%, 100% { fill: var(--dot0, rgba(28,27,46,.14)); } }
+@keyframes merge { 0%, 15% { transform: translate(var(--dx), var(--dy)); opacity: .55; } 55%, 85% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(var(--dx), var(--dy)); opacity: .55; } }
+@keyframes hub { 0%, 50% { opacity: 0; } 60%, 85% { opacity: .9; } 100% { opacity: 0; } }
+@keyframes grow { 0% { transform: scaleY(.15); } 40%, 85% { transform: scaleY(1); } 100% { transform: scaleY(.15); } }
+.v-dot { fill: var(--dot0, rgba(28,27,46,.14)); animation: dotfill 6s infinite; }
+.v-sheet { fill: none; stroke: var(--vink, var(--ink)); stroke-width: 1; animation: merge 5s var(--ease) infinite; transform-box: fill-box; }
+.v-hub { fill: var(--dot1, var(--brass)); opacity: 0; animation: hub 5s infinite; }
+.v-bar { fill: var(--vink, var(--ink)); transform-box: fill-box; transform-origin: bottom; animation: grow 4.5s var(--ease) infinite; }
+
+/* the way back to the four takes */
+.takes { position: fixed; z-index: 50; left: 50%; translate: -50% 0; top: 8px; padding: 4px 11px; border-radius: 99px; background: rgba(5,7,22,.7); box-shadow: inset 0 0 0 1px var(--line); font: 500 10px var(--caps); letter-spacing: .18em; text-transform: uppercase; color: rgba(241,236,226,.55); text-decoration: none; opacity: .75; }
+.takes:hover { opacity: 1; color: var(--a); }
+.embed .takes { display: none; }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0s !important; transition-duration: .01ms !important; transition-delay: 0s !important; } }

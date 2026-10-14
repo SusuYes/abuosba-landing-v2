@@ -1,0 +1,59 @@
+---
+/* Every address on the site, in English and under /ar/ in Arabic. Each is the same document (Shell) opened at its
+   place; a thought's page also carries the thought's words, which the page script shows. */
+import { render } from "astro:content";
+import Shell from "../layouts/Shell.astro";
+import { published, summary, type Thought } from "../lib/thoughts";
+import { BUILDS, href, description, type Lang } from "../lib/site";
+
+export async function getStaticPaths() {
+  const posts = await published();
+  const langs: Lang[] = ["en", "ar"];
+  const flip = (l: Lang): Lang => (l === "ar" ? "en" : "ar");
+  const path = (key: string, l: Lang) => href(key, l).replace(/^\/|\/$/g, "") || undefined;
+  const out = [];
+  for (const lang of langs) {
+    const both = (key: string, own?: string) => ({ params: { route: path(key, lang) }, props: { lang, key, other: href(key, flip(lang)), own } });
+    out.push(both(""), both("notes"), both("shelf"), both("shelf/music"), both("about"), both("work"));
+    for (const id of Object.keys(BUILDS)) out.push(both("work/" + id, BUILDS[id][lang]));
+    for (const t of posts.filter((p) => p.data.lang === lang)) {
+      const pair = t.data.pair && posts.find((p) => p.id === t.data.pair && p.data.lang !== lang);
+      out.push({ params: { route: path("note/" + t.id, lang) }, props: { lang, key: "note/" + t.id, other: pair ? href("note/" + pair.id, flip(lang)) : undefined, own: t.data.title, thought: t } });
+    }
+  }
+  return out;
+}
+
+interface Props { lang: Lang; key: string; other?: string; own?: string; thought?: Thought }
+const { lang, key, other, own, thought } = Astro.props;
+const ar = lang === "ar";
+const Body = thought ? (await render(thought)).Content : null;
+const list = (await published()).filter((p) => p.data.lang === lang);
+const t = (en: string, arabic: string) => (ar ? arabic : en);
+const page = key.split("/")[0];
+---
+<Shell lang={lang} key={key} other={other} own={own} dek={thought?.data.dek}>
+  {thought && Body && <template id="note-body" data-slug={thought.id}><Body /></template>}
+  <Fragment slot="noscript">
+    <nav><a href={href("", lang)}>{t("Tonight", "الليلة")}</a> · <a href={href("notes", lang)}>{t("Thoughts", "خواطر")}</a> · <a href={href("shelf", lang)}>{t("The shelf", "الرف")}</a> · <a href={href("about", lang)}>{t("About", "عنّي")}</a> · <a href={href("work", lang)}>{t("The work", "العمل")}</a></nav>
+    {thought && Body ? (
+      <article>
+        <p>{summary(thought).kind}</p>
+        <h1>{thought.data.title}</h1>
+        <p><em>{thought.data.dek}</em></p>
+        <Body />
+      </article>
+    ) : (
+      <>
+        <h1>{page === "work" ? (own || t("Work", "العمل")) : page === "about" ? t("Suhail AbuOsba", "سهيل ابواصبع") : page === "shelf" ? t("The shelf", "الرف") : page === "notes" ? t("Thoughts", "خواطر") : t("Suhail AbuOsba", "سهيل ابواصبع")}</h1>
+        <p>{description(key, lang)}</p>
+        {(page === "" || page === "notes") && (
+          list.length ? <ul>{list.map((p) => <li><a href={href("note/" + p.id, lang)}>{p.data.title}</a>{p.data.dek && <> · {p.data.dek}</>}</li>)}</ul>
+            : <p>{t("Nothing written yet.", "لا خواطر بالعربية بعد.")}</p>
+        )}
+        {page === "work" && <ul>{Object.entries(BUILDS).map(([id, b]) => <li><a href={href("work/" + id, lang)}>{b[lang]}</a></li>)}</ul>}
+      </>
+    )}
+    {other && <p><a href={other} lang={ar ? "en" : "ar"}>{ar ? "English" : "عربي"}</a></p>}
+  </Fragment>
+</Shell>

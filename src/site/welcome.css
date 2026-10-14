@@ -1,0 +1,110 @@
+/* v21: the page in the colour of the visitor's sky, and their constellation of visits kept small on the right */
+
+/* draft: the page takes on the colour of the visitor's sky, and a slim strip of their day to move along it */
+.cs-sky { position: fixed; inset: 0; pointer-events: none; background: #050716; transition: opacity .8s; }
+body.rising .cs-sky, body.day .cs-sky { opacity: 0; }
+#sky { opacity: var(--cs-stars, 1); }
+.star { opacity: var(--cs-stars, 1); }
+.cs .greet p { max-width: 40em; transition: opacity .25s; }
+.cs .greet p.out { opacity: 0; }
+.cs-day { position: relative; height: 38px; margin: 14px 0 0; cursor: ew-resize; touch-action: pan-y; -webkit-tap-highlight-color: transparent; outline: none; }
+.cs-day:focus-visible { outline: 1px solid rgba(240,185,58,.55); outline-offset: 2px; border-radius: 3px; }
+.cs-tr { position: absolute; left: 8px; right: 8px; top: 50%; contain: layout; }
+.cs-line { position: absolute; left: 0; right: 0; top: -1px; height: 2px; border-radius: 2px; background: rgba(241,236,226,.2); }
+.cs-tick { position: absolute; top: -5px; width: 1px; height: 10px; background: rgba(239,203,148,.55); }
+.cs-now { position: absolute; top: -3px; width: 1px; height: 6px; background: rgba(241,236,226,.45); opacity: 0; transition: opacity .4s; }
+.cs-day.away .cs-now { opacity: 1; }
+.cs-mk { position: absolute; top: 0; left: 0; width: 0; height: 0; }
+.cs-orb { position: absolute; left: -5px; top: -5px; width: 10px; height: 10px; border-radius: 50%; transition: background .4s, box-shadow .4s; }
+.cs-orb.sun { background: radial-gradient(circle at 45% 40%, #fff1cf, #f5c25a 55%, #e9993e); box-shadow: 0 0 10px 3px rgba(240,170,70,.45), 0 0 26px 6px rgba(240,150,70,.18); }
+.cs-orb.moon { background: #eee7d8; box-shadow: 0 0 10px 2px rgba(220,226,255,.22); }
+.cs-orb.dark { background: transparent; box-shadow: inset 0 0 0 1px rgba(241,236,226,.6); -webkit-mask: none !important; mask: none !important; }
+.cs-orb::after { content: ""; position: absolute; inset: -1px; border-radius: 50%; box-shadow: 0 0 0 1px rgba(240,185,58,.7); opacity: 0; }
+.cs-day.ping .cs-orb::after { animation: cs-ping 1.6s ease-out 2; }
+@keyframes cs-ping { 0% { opacity: .9; transform: scale(1); } 100% { opacity: 0; transform: scale(3.2); } }
+.cs-tm { position: absolute; bottom: 9px; left: 0; translate: var(--tx, -50%) 0; white-space: nowrap; font: 500 10px var(--caps); letter-spacing: .16em; text-transform: uppercase; color: var(--t); opacity: 0; transition: opacity .35s; font-variant-numeric: tabular-nums; }
+.cs-day.show .cs-tm { opacity: .9; }
+.cs .greet .meta { margin-top: 2px; }
+@media (max-width: 760px) { .cs-day { margin-top: 12px; height: 44px; } .cs .greet p { font-size: 16.5px; } }
+
+/* Welcome back: the page remembers this browser, and each visit adds a star to the visitor's own constellation */
+.welcome .bk { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 36px; align-items: center; }
+.welcome .bk .greet p { max-width: 34em; }
+.welcome .bk .greet p mark { white-space: nowrap; }
+.welcome .bk-sky { position: relative; height: 200px; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.welcome .bk-sky svg { position: absolute; inset: 0; overflow: visible; }
+.welcome .bk-s { cursor: pointer; outline: none; }
+.welcome .bk-s .co { transform-box: fill-box; transform-origin: center; transition: transform .35s var(--ease), fill .35s; }
+.welcome .bk-s.on .co { transform: scale(1.7); fill: #fff4dc; }
+.welcome .bk-s:focus-visible .ring { opacity: .7; }
+.welcome .bk-s .ring { fill: none; stroke: var(--a); stroke-width: .8; opacity: 0; transition: opacity .3s; }
+.welcome .bk-sky .fl, .welcome .bk-sky .a { transform-box: fill-box; transform-origin: center; }
+.welcome .bk-l { stroke: rgba(239,203,148,.4); stroke-width: .8; stroke-linecap: round; fill: none; transition: stroke .35s; }
+.welcome .bk-l.on { stroke: rgba(255,226,170,.85); }
+.welcome .bk-tip { position: absolute; left: 0; top: 0; padding: 3px 0; white-space: nowrap; pointer-events: none; font: 500 10px var(--caps); letter-spacing: .16em; text-transform: uppercase; color: var(--pale); text-shadow: 0 0 8px #050716, 0 0 3px #050716; opacity: 0; transition: opacity .35s; }
+.welcome .bk-tip.on { opacity: 1; }
+.welcome .bk-tip span { color: var(--m); margin-right: 8px; }
+.welcome .bk-pv { color: rgba(169,163,154,.7); }
+.welcome .bk-pv button { font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; padding: 0; border-bottom: 1px dotted rgba(169,163,154,.35); }
+.welcome .bk-pv button:hover, .welcome .bk-pv button:focus-visible { color: var(--a); outline: none; }
+.welcome .bk-pv button[aria-pressed="true"] { color: var(--t); border-bottom-color: transparent; }
+.welcome .bk-fade { animation: bkfade .6s var(--ease) both; }
+@keyframes bkfade { from { opacity: 0; transform: translateY(4px); } }
+@media (max-width: 760px) {
+  .welcome .bk { grid-template-columns: 1fr; gap: 6px; }
+  .welcome .bk-sky { height: 128px; }
+}
+
+body { --m: color-mix(in srgb, #bdb6aa, #d4cdc1 calc(var(--cs-lift, 0) * 100%)); }
+.welcome .greet p { color: color-mix(in srgb, #cfc8bb, #e9e3d7 calc(var(--cs-lift, 0) * 100%)); }
+.row .note p { color: color-mix(in srgb, #ccc5b9, #dcd5c8 calc(var(--cs-lift, 0) * 100%)); }
+/* v22: the sky's details live in a small panel, opened from a link at the bottom */
+.cs-pop { position: fixed; z-index: 30; left: 50%; bottom: calc(58px + env(safe-area-inset-bottom, 0px)); width: min(560px, calc(100vw - 32px)); translate: -50% 12px; padding: 18px 22px 16px; border-radius: 14px; background: rgba(8,11,32,.86); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: inset 0 0 0 1px rgba(241,236,226,.12), 0 18px 50px rgba(0,0,0,.45); opacity: 0; visibility: hidden; transition: opacity .35s, translate .45s var(--ease), visibility 0s .45s; }
+.cs-pop.on { opacity: 1; translate: -50% 0; visibility: visible; transition: opacity .35s, translate .45s var(--ease), visibility 0s; }
+.cs-pop .k { font: 500 10px var(--caps); letter-spacing: .2em; text-transform: uppercase; color: #bdb6aa; display: flex; justify-content: space-between; align-items: center; }
+.cs-pop .x { font: 400 20px/1 var(--serif); color: #cfc8bb; padding: 0 2px; } .cs-pop .x:hover { color: var(--a); }
+.cs-pop p { margin-top: 10px; font-size: 16px; line-height: 1.5; color: #e9e3d7; transition: opacity .25s; } .cs-pop p.out { opacity: 0; }
+.cs-pop .meta { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 4px; font: 500 10px var(--caps); letter-spacing: .18em; text-transform: uppercase; color: #bdb6aa; }
+.cs-pop .hint { color: var(--a); }
+body.rising .cs-pop, body.day .cs-pop { opacity: 0; pointer-events: none; }
+@media (max-width: 760px) { .cs-pop { bottom: calc(150px + env(safe-area-inset-bottom, 0px)); padding: 16px 18px 14px; } }
+.welcome.duo { width: 100% !important; display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: clamp(32px, 6vw, 96px); align-items: center; }
+.duo-main { min-width: 0; max-width: 760px; }
+.welcome .bk-c { display: flex; flex-direction: column-reverse; align-items: stretch; gap: 2px; }
+.welcome .bk-c .greet h1, .welcome .bk-c .greet p { display: none; }
+.welcome .bk-c .bk-sky { height: 150px; }
+.welcome .bk-c .greet .meta { margin-top: 0; justify-content: flex-start; font-size: 9.5px; gap: 4px 12px; }
+.welcome .bk-c .hint { display: none; }
+.welcome .bk-c .bk-pv { flex-basis: 100%; }
+/* v25: the quiet lines under the greeting */
+.welcome .duo-line { margin-top: 12px; max-width: 40em; font: italic 400 18px/1.5 var(--serif); color: color-mix(in srgb, #cfc8bb, #e9e3d7 calc(var(--cs-lift, 0) * 100%)); cursor: pointer; transition: opacity .6s, filter .6s; -webkit-tap-highlight-color: transparent; }
+.welcome .duo-line b { font-weight: inherit; display: inline-block; opacity: 0; }
+.welcome .duo-line.in b { animation: whin 1.1s var(--ease) both; }
+.welcome .duo-line.out { opacity: 0; filter: blur(3px); }
+.welcome .duo-line [lang="ar"] { font: 400 19px/1 var(--ar); font-style: normal; margin-right: 12px; color: var(--pale); }
+.welcome .duo-line q { quotes: none; }
+.welcome .duo-line cite { margin-left: 12px; font: 500 10px var(--caps); font-style: normal; letter-spacing: .18em; text-transform: uppercase; color: var(--m); white-space: nowrap; }
+.welcome .duo-line cite b { white-space: nowrap; }
+@keyframes whin { from { opacity: 0; filter: blur(4px); transform: translateY(3px); } to { opacity: 1; filter: none; transform: none; } }
+@media (max-width: 760px) { .welcome .duo-line { font-size: 16.5px; margin-top: 8px; } .welcome .duo-line cite { display: block; margin: 6px 0 0; } .welcome .duo-line .ar-w { display: block; margin-bottom: 2px; } .welcome .duo-line [lang="ar"] { font-size: 17px; } }
+.duo-side { opacity: 0; transition: opacity 1s ease; } .duo-side.on { opacity: 1; }
+/* v24: on wider screens the constellation floats beside the greeting and takes no height of its own,
+   so the welcome is only as tall as the greeting and the Thoughts sit right under it */
+@media (min-width: 761px) {
+  .welcome.duo { display: block; position: relative; margin-bottom: calc(-1 * clamp(10px, 3vh, 28px)); }
+  .welcome.duo .duo-main { padding-right: 380px; max-width: none; }
+  .welcome.duo .duo-side { position: absolute; right: 0; bottom: 0; width: 340px; }
+  .welcome .bk-c .bk-sky { height: 110px; }
+}
+@media (max-width: 760px) {
+  .welcome.duo { grid-template-columns: 1fr; gap: 8px; }
+  .welcome .bk-c .bk-sky { height: 92px; }
+}
+/* v40: right to left, the constellation moves to the left side */
+@media (min-width: 761px) {
+  html[dir="rtl"] .welcome.duo .duo-main { padding-right: 0; padding-left: 380px; }
+  html[dir="rtl"] .welcome.duo .duo-side { right: auto; left: 0; }
+}
+html[dir="rtl"] .welcome .duo-line cite { margin-left: 0; margin-right: 12px; }
+html[lang="ar"] .welcome .duo-line { font: 400 19px/1.7 "Noto Naskh Arabic", serif; }
+html[lang="ar"] .welcome .duo-line cite { font: 600 12px "Noto Naskh Arabic", serif; }

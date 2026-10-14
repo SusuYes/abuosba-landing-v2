@@ -1,0 +1,11 @@
+---
+/* Any address that isn't on the map. GitHub Pages serves this for every missing path, keeping the address, so the
+   page script shows the lost page for it, in Arabic under /ar/. */
+import Shell from "../layouts/Shell.astro";
+---
+<Shell lang="en" key={null}>
+  <Fragment slot="noscript">
+    <h1>This page isn't on the map.</h1>
+    <p>The link may be old, or the page has moved. <a href="/">Back to tonight</a>.</p>
+  </Fragment>
+</Shell>

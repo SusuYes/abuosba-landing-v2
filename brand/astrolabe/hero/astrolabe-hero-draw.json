@@ -1,0 +1,279 @@
+{
+ "svg": "astrolabe-hero.svg",
+ "viewBox": [
+  -420,
+  -472,
+  840,
+  840
+ ],
+ "coordinates": "y down; plate strokes in SVG coordinates, rete strokes in the rete frame (place them inside <g id=\"rete\">)",
+ "order": "rim and throne, horizon, then the sky (plate lines, Suhail's rail, the star field), letters in writing order س ه ي ل, the pointer, the sun, the trail, Suhail last with a flash",
+ "strokes": [
+  {
+   "id": "face",
+   "target": "face",
+   "kind": "appear",
+   "group": "rim",
+   "frame": "plate"
+  },
+  {
+   "id": "rim",
+   "target": "limb",
+   "kind": "stroke",
+   "d": "M0,-325 A325 325 0 0 1 0,325 A325 325 0 0 1 0,-325",
+   "width": 30.0,
+   "group": "rim",
+   "frame": "plate",
+   "note": "the brass limb #limb; then show #hours, #noon_midnight and #rise-set-marks"
+  },
+  {
+   "id": "hours",
+   "target": "hours",
+   "kind": "appear",
+   "group": "rim",
+   "frame": "plate"
+  },
+  {
+   "id": "noon_midnight",
+   "target": "noon_midnight",
+   "kind": "appear",
+   "group": "rim",
+   "frame": "plate"
+  },
+  {
+   "id": "rise-set-marks",
+   "target": "rise-set-marks",
+   "kind": "appear",
+   "group": "rim",
+   "frame": "plate"
+  },
+  {
+   "id": "throne",
+   "target": "throne",
+   "kind": "scan",
+   "group": "rim",
+   "frame": "plate"
+  },
+  {
+   "id": "throne_ring",
+   "target": "throne_ring",
+   "kind": "stroke",
+   "d": "M0,-420 A18 18 0 0 1 -0,-456 A18 18 0 0 1 0,-420",
+   "width": 10,
+   "group": "rim",
+   "frame": "plate"
+  },
+  {
+   "id": "pivot",
+   "target": "pivot",
+   "kind": "appear",
+   "group": "rim",
+   "frame": "plate"
+  },
+  {
+   "id": "horizon",
+   "target": "horizon",
+   "kind": "stroke",
+   "d": "M-287.25,-119.19 A377.29 377.29 0 0 0 287.25,-119.19",
+   "width": 5,
+   "group": "rim",
+   "frame": "plate"
+  },
+  {
+   "id": "plate",
+   "target": "plate",
+   "kind": "appear",
+   "group": "sky",
+   "frame": "plate",
+   "note": "the faint plate lines"
+  },
+  {
+   "id": "track",
+   "target": "track",
+   "kind": "appear",
+   "group": "sky",
+   "frame": "plate",
+   "note": "Suhail's rail"
+  },
+  {
+   "id": "starfield",
+   "target": "starfield",
+   "kind": "appear",
+   "group": "sky",
+   "frame": "rete",
+   "note": "the real stars; opacity then follows skyStep(sunAlt).starOpacity"
+  },
+  {
+   "id": "seen_body.1",
+   "target": "seen_body",
+   "kind": "stroke",
+   "d": "M138.39,-78.74 A165.63 165.63 0 0 0 133.11,-104.19",
+   "width": 24,
+   "group": "letters",
+   "frame": "rete"
+  },
+  {
+   "id": "seen_tooth_3",
+   "target": "seen_tooth_3",
+   "kind": "stroke",
+   "d": "M131.19,-103.63 L162.4,-112.71",
+   "width": 15,
+   "taper": [
+    22,
+    8
+   ],
+   "group": "letters",
+   "frame": "rete",
+   "star": "π Pup"
+  },
+  {
+   "id": "seen_body.2",
+   "target": "seen_body",
+   "kind": "stroke",
+   "d": "M133.11,-104.19 A165.63 165.63 0 0 0 119.07,-137.98",
+   "width": 24,
+   "group": "letters",
+   "frame": "rete"
+  },
+  {
+   "id": "seen_tooth_2",
+   "target": "seen_tooth_2",
+   "kind": "stroke",
+   "d": "M117.32,-137.02 L145.77,-152.73",
+   "width": 15,
+   "taper": [
+    22,
+    8
+   ],
+   "group": "letters",
+   "frame": "rete",
+   "star": "ζ Pup"
+  },
+  {
+   "id": "seen_body.3",
+   "target": "seen_body",
+   "kind": "stroke",
+   "d": "M119.07,-137.98 A165.63 165.63 0 0 0 85.63,-180.34",
+   "width": 24,
+   "group": "letters",
+   "frame": "rete"
+  },
+  {
+   "id": "seen_tooth_1",
+   "target": "seen_tooth_1",
+   "kind": "stroke",
+   "d": "M84.28,-178.87 L106.17,-202.89",
+   "width": 15,
+   "taper": [
+    22,
+    8
+   ],
+   "group": "letters",
+   "frame": "rete",
+   "star": "λ Vel"
+  },
+  {
+   "id": "seen_body.4",
+   "target": "seen_body",
+   "kind": "stroke",
+   "d": "M85.63,-180.34 A165.63 165.63 0 0 0 6,-220.43",
+   "width": 24,
+   "group": "letters",
+   "frame": "rete"
+  },
+  {
+   "id": "heh.outline",
+   "target": "heh",
+   "kind": "stroke",
+   "d": "M0,-143.3 C23.62,-138.34 67.5,-124.12 67.5,-102 C67.5,-85.71 54.29,-72.5 38,-72.5 C23.34,-72.5 4,-77.78 0,-85.78 C-4,-77.78 -23.34,-72.5 -38,-72.5 C-54.29,-72.5 -67.5,-85.71 -67.5,-102 C-67.5,-124.12 -23.62,-138.34 0,-143.3Z",
+   "width": 21,
+   "group": "letters",
+   "frame": "rete",
+   "note": "the loop of the two-eyed heh; finish with the heh scan for the mass between the counters"
+  },
+  {
+   "id": "heh",
+   "target": "heh",
+   "kind": "scan",
+   "group": "letters",
+   "frame": "rete"
+  },
+  {
+   "id": "yeh_bowl",
+   "target": "yeh_bowl",
+   "kind": "stroke",
+   "d": "M-82.68,-89.72 A108.99 108.99 0 1 0 26.92,95.9",
+   "width": 24,
+   "group": "letters",
+   "frame": "rete",
+   "note": "the true ecliptic: the sun rides on this circle"
+  },
+  {
+   "id": "yeh_pointer",
+   "target": "yeh_pointer",
+   "kind": "stroke",
+   "d": "M26.92,95.9 L276.33,-106.9",
+   "width": 12,
+   "taper": [
+    24,
+    0
+   ],
+   "group": "letters",
+   "frame": "rete",
+   "note": "then the yeh_pointer scan for the flame head"
+  },
+  {
+   "id": "yeh_pointer.scan",
+   "target": "yeh_pointer",
+   "kind": "scan",
+   "group": "letters",
+   "frame": "rete"
+  },
+  {
+   "id": "lam_stem",
+   "target": "lam_stem",
+   "kind": "stroke",
+   "d": "M0,-302 L0,102",
+   "width": 24,
+   "group": "letters",
+   "frame": "rete"
+  },
+  {
+   "id": "lam_bowl",
+   "target": "lam_bowl",
+   "kind": "stroke",
+   "d": "M0,100 A130 130 0 0 1 -256.14,131.45",
+   "width": 24,
+   "group": "letters",
+   "frame": "rete"
+  },
+  {
+   "id": "sun_body",
+   "target": "sun_body",
+   "kind": "appear",
+   "group": "bodies",
+   "frame": "rete",
+   "note": "already translated to the sun's rete-frame position"
+  },
+  {
+   "id": "trail",
+   "target": "trail",
+   "kind": "appear",
+   "group": "bodies",
+   "frame": "rete",
+   "note": "Suhail's trail, just before the star"
+  },
+  {
+   "id": "suhail",
+   "target": "suhail_star",
+   "kind": "scan",
+   "effect": "flash",
+   "centre": [
+    276.33,
+    -106.9
+   ],
+   "group": "bodies",
+   "frame": "rete"
+  }
+ ]
+}
