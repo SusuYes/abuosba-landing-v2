@@ -55,7 +55,7 @@ pair: other-slug       # optional: the same thought in the other language
 The address is the file name, lower-cased with dashes (`Reading the sky.md` becomes `/thoughts/reading-the-sky/`).
 Wiki links (`[[...]]`) and embeds are not turned into links yet; use ordinary Markdown links.
 
-Without the vault, the build reads `src/content/thoughts/` (three stand-ins, marked `standin: true`). To build from
+Without the vault, the build reads `src/content/thoughts/`, which is empty: the site then says nothing is written yet. To build from
 the vault's private repo, set in this repo's settings:
 
 - variable `THOUGHTS_REPO`: the vault repo, as `owner/name`

@@ -7,9 +7,9 @@ export const NAME = { en: "Suhail AbuOsba", ar: "سهيل ابواصبع" };
 
 // the builds on the Work page (their words live in src/site/common.js, CASES)
 export const BUILDS: Record<string, { en: string; ar: string }> = {
-  arrivals: { en: "Student arrivals", ar: "وصول الطلاب" },
-  hub: { en: "Engagement hub", ar: "مركز المشاركة" },
-  events: { en: "Events platform", ar: "منصة الفعاليات" },
+  arrivals: { en: "Arrival outreach", ar: "متابعة الوصول" },
+  hub: { en: "Engagement data", ar: "بيانات المشاركة" },
+  events: { en: "Event registry", ar: "سجل الفعاليات" },
 };
 
 const PAGE: Record<string, { en: string; ar: string }> = {

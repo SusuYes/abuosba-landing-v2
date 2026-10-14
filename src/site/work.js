@@ -15,7 +15,7 @@
     const off = (new Date(Date.UTC(y, m - 1, 1)).getUTCDay() + 6) % 7, days = new Date(Date.UTC(y, m, 0)).getUTCDate();
     return { name, y, off, days, today: d, weeks: Math.ceil((off + days) / 7) };
   })();
-  const APP = { arrivals: ["Arrivals", "check-in desk"], hub: ["Engagement hub", "ask anything"], events: ["Events", MONTH.name + " " + MONTH.y] };
+  const APP = { arrivals: ["Arrivals", "contact log"], hub: ["Engagement data", "one model"], events: ["Events", MONTH.name + " " + MONTH.y] };
 
   function Timers() {
     const s = new Set();
@@ -26,10 +26,10 @@
     };
   }
 
-  /* ---------- 01 · student arrivals: a check-in desk console ---------- */
+  /* ---------- 01 · arrival outreach: staff reach every new student and log when each one lands ---------- */
   function Arrivals(root) {
     const R = rng(11), PR = ["Medicine", "Engineering", "Pharmacy", "Business", "Law", "Sciences", "Dentistry", "Computing", "Architecture", "Nursing"];
-    const FL = [["AR 204", "06:40", "Landed"], ["AR 318", "09:15", "Landed"], ["AR 455", "11:30", "Landed"], ["AR 512", "14:05", "En route"], ["AR 690", "17:50", "Scheduled"]];
+    const FL = [["Week 1", "dates in", "Confirmed"], ["Week 2", "dates in", "Confirmed"], ["Week 3", "dates in", "Confirmed"], ["Week 4", "filling", "Filling"], ["Week 5", "open", "Open"]];
     const L = "ABDEFHJKLMNRSTWY";
     const tm = Timers();
     let n, qn, fill, rooms, ul, serial;
@@ -40,7 +40,7 @@
       const LL = document.documentElement.lang === "ar" ? "أبجدهوزحطيكلمنسعفصقرشت" : L; // initials in the page's own script
       li.innerHTML = `<span class="wm-av">${LL[Math.floor(R() * LL.length)]}${LL[Math.floor(R() * LL.length)]}</span>
         <span class="wm-who"><b>${id}</b>${qf ? '<span class="wm-qf">Q · 14 d</span>' : ""}<small>${PR[Math.floor(R() * PR.length)]} · ${FL[fl][0]}</small></span>
-        <span class="wm-chip"><i></i>${TICK}<em style="font-style:normal">${state === "desk" ? "At desk" : "Landed"}</em></span>`;
+        <span class="wm-chip"><i></i>${TICK}<em style="font-style:normal">${state === "desk" ? "Calling" : "To call"}</em></span>`;
       return li;
     }
     function build() {
@@ -48,19 +48,19 @@
       root.className = "wm wm-arr";
       root.innerHTML = `
         <div class="wm-top">
-          <div class="wm-st"><span class="wm-k">Checked in today</span><b class="wm-big" data-n>${n}</b><span class="wm-meter"><i style="--p:41%"></i></span><span class="wm-sub">of ${T("[N]")} expected</span></div>
-          <div class="wm-st"><span class="wm-k">At the desk</span><b data-desk>1</b><span class="wm-sub">Hall B · desk 2 open</span></div>
-          <div class="wm-st"><span class="wm-k">Quarantine</span><b data-q>${qn}</b><span class="wm-sub">14-day, flagged on arrival</span></div>
+          <div class="wm-st"><span class="wm-k">Students reached</span><b class="wm-big" data-n>${n}</b><span class="wm-meter"><i style="--p:41%"></i></span><span class="wm-sub">every new student, by phone or email</span></div>
+          <div class="wm-st"><span class="wm-k">Calls under way</span><b data-desk>1</b><span class="wm-sub">40+ staff logging contacts</span></div>
+          <div class="wm-st"><span class="wm-k">Quarantine places</span><b data-q>${qn}</b><span class="wm-sub">planned from confirmed dates</span></div>
         </div>
         <div class="wm-body">
-          <section class="wm-pan wm-queue"><h4 class="wm-h"><span>Arriving now</span><span>scan · confirm · room</span></h4><ul></ul></section>
-          <section class="wm-pan wm-fl"><h4 class="wm-h"><span>Flights today</span><span>checked in</span></h4><ul>${FL.map((f, i) => `<li><span><b>${f[0]}</b><small>${f[1]}</small></span><span class="wm-bar"><i style="--p:${fill[i] * 100}%"></i></span><em class="${f[2] === "Landed" ? "l" : ""}">${f[2]}</em></li>`).join("")}</ul></section>
-          <section class="wm-pan wm-rooms"><h4 class="wm-h"><span>Rooms assigned</span><span>block C</span></h4><div class="wm-dots">${Array.from({ length: 48 }, (_, i) => `<i class="${i < rooms ? "on" : ""}"></i>`).join("")}</div></section>
+          <section class="wm-pan wm-queue"><h4 class="wm-h"><span>Contact log</span><span>call · confirm · log</span></h4><ul></ul></section>
+          <section class="wm-pan wm-fl"><h4 class="wm-h"><span>Arrivals by week</span><span>dates confirmed</span></h4><ul>${FL.map((f, i) => `<li><span><b>${f[0]}</b><small>${f[1]}</small></span><span class="wm-bar"><i style="--p:${fill[i] * 100}%"></i></span><em class="${f[2] === "Confirmed" ? "l" : ""}">${f[2]}</em></li>`).join("")}</ul></section>
+          <section class="wm-pan wm-rooms"><h4 class="wm-h"><span>Quarantine places</span><span>booked</span></h4><div class="wm-dots">${Array.from({ length: 48 }, (_, i) => `<i class="${i < rooms ? "on" : ""}"></i>`).join("")}</div></section>
         </div>`;
       ul = q(".wm-queue ul", root);
       ul.append(row("desk")); for (let i = 0; i < 8; i++) ul.append(row("landed"));
     }
-    function setChip(li, s) { li.dataset.s = s; q("em", li).textContent = s === "in" ? "Checked in" : s === "desk" ? "At desk" : "Landed"; }
+    function setChip(li, s) { li.dataset.s = s; q("em", li).textContent = s === "in" ? "Date confirmed" : s === "desk" ? "Calling" : "To call"; }
     function tick() {
       const live = qq("li:not(.gone)", ul), first = live[0]; if (!first) return;
       setChip(first, "in");
@@ -86,11 +86,11 @@
     };
   }
 
-  /* ---------- 02 · engagement hub: many team sheets fold into one table; a question gets one answer ---------- */
+  /* ---------- 02 · engagement data: every source folds into one model; a question gets one answer ---------- */
   function Hub(root) {
     const tm = Timers();
     const TEAMS = [["Outreach", COL.brass, "School visit"], ["Clubs", COL.rose, "Society fair"], ["Volunteers", COL.sage, "Beach clean"], ["Mentoring", COL.slate, "1:1 session"], ["Sport", COL.ink, "5-a-side"], ["Library", COL.gold, "Study skills"], ["Careers", "#8a6d9b", "CV clinic"]];
-    const FILES = ["Outreach_2024.xlsx", "clubs (final) v3.xlsx", "Volunteers.csv", "Mentoring log.xlsx", "Sport_signups.xlsx", "library-events.csv", "Careers Q3.xlsx"];
+    const FILES = ["registrations.csv", "attendance (final) v3.xlsx", "check-ins.csv", "student records", "Careers Q3.xlsx", "finance export.xlsx", "orientation.xlsx"];
     const POS = [[3, 14, -6], [27, 4, 4], [55, 13, -3], [79, 6, 5], [83, 52, -4], [52, 66, 3], [18, 62, -5]];
     const ANS = [["Outreach", 92], ["Clubs", 76], ["Mentoring", 61], ["Volunteers", 47], ["Sport", 36], ["Library", 24]];
     const QTEXT = "Which teams reached the most first-years?";
@@ -101,14 +101,14 @@
       root.className = "wm wm-hub";
       root.innerHTML = `
         <div class="wm-q"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5l1.3 4.2 4.2 1.3-4.2 1.3L8 12.5 6.7 8.3 2.5 7l4.2-1.3z" fill="#a8792c"/></svg>
-          <span class="wm-qt"><span data-typed></span><i class="wm-caret"></i><span class="wm-ph">Ask across every team's sheet…</span></span><span class="wm-kbd">Ask ↵</span></div>
+          <span class="wm-qt"><span data-typed></span><i class="wm-caret"></i><span class="wm-ph">Ask across every source…</span></span><span class="wm-kbd">Ask ↵</span></div>
         <div class="wm-hbody">
-          <section class="wm-pan wm-tbl"><h4 class="wm-h"><span>All teams · one table</span><span data-rows>waiting for sheets</span></h4>
+          <section class="wm-pan wm-tbl"><h4 class="wm-h"><span>All sources · one table</span><span data-rows>waiting for sources</span></h4>
             <div class="wm-tr wm-thead"><span>Student</span><span>Team</span><span>Activity</span><span>Date</span></div><div class="wm-tb"></div></section>
           <section class="wm-pan wm-ans"><h4 class="wm-h"><span>Answer</span><span data-src></span></h4>
-            <p class="wm-empty">One question, asked of every team's sheet at once.</p>
+            <p class="wm-empty">One question, asked of every source at once.</p>
             <div class="wm-think"><i></i><i></i><i></i></div>
-            <div class="wm-chart"><h5>First-years reached, by team</h5><div class="wm-hbs">${ANS.map(([t]) => `<div class="wm-hb"><span>${t}</span><span class="wm-bar"><i></i></span></div>`).join("")}</div><p class="wm-said">Outreach reached the most, then Clubs. From 7 sheets, ${T("[N]")} rows.</p></div></section>
+            <div class="wm-chart"><h5>First-years reached, by team</h5><div class="wm-hbs">${ANS.map(([t]) => `<div class="wm-hb"><span>${t}</span><span class="wm-bar"><i></i></span></div>`).join("")}</div><p class="wm-said">Outreach reached the most, then Clubs. From 7 sources, one model.</p></div></section>
         </div>
         ${TEAMS.map((t, i) => `<div class="wm-sh" style="--c:${t[1]};--r:${POS[i][2]}deg;left:${POS[i][0]}%;top:${POS[i][1]}%"><span>${FILES[i]}</span></div>`).join("")}`;
     }
@@ -120,7 +120,7 @@
       tb.prepend(r); rows++;
       tm.at(900, () => r.classList.remove("fresh"));
       while (tb.children.length > 12) tb.lastElementChild.remove();
-      q("[data-rows]", root).textContent = rows + " rows · " + Math.min(7, Math.ceil(rows / 2)) + " sheets";
+      q("[data-rows]", root).textContent = rows + " rows · " + Math.min(7, Math.ceil(rows / 2)) + " sources";
     }
     function run() {
       const sheets = qq(".wm-sh", root), tbl = q(".wm-tbl", root);
@@ -134,7 +134,7 @@
       const QT = qtext();
       for (let c = 1; c <= QT.length; c++) tm.at(2700 + c * 36, () => { typed().textContent = QT.slice(0, c); });
       const t1 = 2700 + QT.length * 36 + 250;
-      tm.at(t1, () => { q(".wm-kbd", root).classList.add("hit"); q(".wm-ans", root).classList.add("thinking"); q("[data-src]", root).textContent = "7 sheets"; });
+      tm.at(t1, () => { q(".wm-kbd", root).classList.add("hit"); q(".wm-ans", root).classList.add("thinking"); q("[data-src]", root).textContent = "7 sources"; });
       tm.at(t1 + 220, () => q(".wm-kbd", root).classList.remove("hit"));
       tm.at(t1 + 750, () => {
         const a = q(".wm-ans", root); a.classList.remove("thinking"); a.classList.add("answered");
@@ -147,13 +147,13 @@
       build();
       qq(".wm-sh", root).forEach((sh) => sh.remove());
       TEAMS.forEach((t) => { addRow(t); addRow(t); }); qq(".wm-tb .fresh", root).forEach((r) => r.classList.remove("fresh"));
-      q(".wm-ph", root).style.display = "none"; q("[data-typed]", root).textContent = qtext(); q("[data-src]", root).textContent = "7 sheets";
+      q(".wm-ph", root).style.display = "none"; q("[data-typed]", root).textContent = qtext(); q("[data-src]", root).textContent = "7 sources";
       q(".wm-ans", root).classList.add("answered"); qq(".wm-hb .wm-bar i", root).forEach((b, i) => (b.style.width = ANS[i][1] + "%"));
     }
     return { reset() { tm.clear(); build(); }, play() { tm.clear(); if (REDUCE) still(); else { build(); run(); } }, stop() { tm.clear(); } };
   }
 
-  /* ---------- 03 · events platform: a month fills up, the report writes itself, export ---------- */
+  /* ---------- 03 · event registry: every event gets an ID, the month fills up, the report writes itself ---------- */
   function Events(root) {
     const tm = Timers();
     const CAT = [["Talks", COL.ink], ["Clubs & arts", COL.rose], ["Sport", COL.sage], ["Careers", COL.brass]];
@@ -180,13 +180,13 @@
       }
       root.innerHTML = `
         <section class="wm-pan wm-cal">
-          <div class="wm-calh"><b>${MONTH.name} ${MONTH.y}</b><span class="wm-nv">‹ ›</span><span class="wm-added" data-added>All campus events, one calendar</span><span class="wm-new">+ New event</span></div>
+          <div class="wm-calh"><b>${MONTH.name} ${MONTH.y}</b><span class="wm-nv">‹ ›</span><span class="wm-added" data-added>Every event starts with an ID</span><span class="wm-new">+ New event</span></div>
           <div class="wm-wd">${["M", "T", "W", "T", "F", "S", "S"].map((x, i) => `<span data-ar="${"نثرخجسح"[i]}">${x}</span>`).join("")}</div>
           <div class="wm-grid">${cells.join("")}</div>
         </section>
         <section class="wm-pan wm-rep">
           <h4 class="wm-h"><span>Report · ${MONTH.name}</span><span>builds itself</span></h4>
-          <div class="wm-kpis"><div><span class="wm-k">Events</span><b data-ev>0</b></div><div><span class="wm-k">Sign-ups</span><b>${T("[N]")}</b></div></div>
+          <div class="wm-kpis"><div><span class="wm-k">Events</span><b data-ev>0</b></div><div><span class="wm-k">Latest ID</span><b data-id>S0140</b></div></div>
           <div class="wm-wkb"><span class="wm-k">By week</span><div class="wm-cols" style="--wn:${MONTH.weeks}">${wk.map((_, i) => `<div class="wm-col"><i></i><small>W${i + 1}</small></div>`).join("")}</div></div>
           <div class="wm-type"><span class="wm-k">By type</span><div class="wm-stack">${CAT.map((c) => `<i style="--c:${c[1]}"></i>`).join("")}</div>
             <ul class="wm-leg">${CAT.map((c) => `<li><i style="--c:${c[1]}"></i>${c[0]}</li>`).join("")}</ul></div>
@@ -198,12 +198,12 @@
       const b = document.createElement("i"); b.className = "wm-e"; b.style.cssText = `--c:${CAT[e.c][1]};--w:${e.w}%`; cell.append(b);
       cell.classList.add("flash"); tm.at(260, () => cell.classList.remove("flash"));
       counts[e.c]++; ev++; wk[Math.floor((MONTH.off + e.d - 1) / 7)]++;
-      q("[data-ev]", root).textContent = ev;
+      q("[data-ev]", root).textContent = ev; const id = "S" + String(140 + ev).padStart(4, "0"); q("[data-id]", root).textContent = id;
       const mx = Math.max(8, ...wk), top = wk.indexOf(Math.max(...wk));
       qq(".wm-col", root).forEach((c, i) => { c.firstElementChild.style.setProperty("--h", (wk[i] / mx) * 100 + "%"); c.classList.toggle("top", i === top && wk[i] > 0); });
       qq(".wm-stack i", root).forEach((s, i) => s.style.setProperty("--w", (counts[i] / ev) * 100 + "%"));
       const dn = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][(MONTH.off + e.d - 1) % 7];
-      q("[data-added]", root).innerHTML = `Added <em>${e.name}</em> · ${dn} ${e.d}`;
+      q("[data-added]", root).innerHTML = `${id} <em>${e.name}</em> · ${dn} ${e.d}`;
     }
     function run() {
       const list = plan();
@@ -244,12 +244,12 @@
 
   /* ---------- the showcase ---------- */
   const tabs = q(".wk-tabs"), info = q(".wk-info"), view = q(".wk-stage .wk-view"), apps = q(".wk-apps"), factss = q(".wk-factss"), frame = q(".wk-stage .wk-frame");
-  const facts = (c, cls) => c.meta.map(([k, v]) => `<div><dt>${k}</dt><dd${/running/i.test(v) ? ' class="ok"' : ""}>${T(v)}</dd></div>`).join("");
+  const facts = (c, cls) => c.meta.map(([k, v]) => `<div><dt>${k}</dt><dd${/running|in use/i.test(v) ? ' class="ok"' : ""}>${T(v)}</dd></div>`).join("");
   ids.forEach((id, i) => {
     const c = CASES[id];
     tabs.insertAdjacentHTML("beforeend", `<li role="presentation"><button class="wk-tab" type="button" role="tab" id="wk-tab-${id}" aria-controls="wk-stage" aria-selected="false" data-i="${i}" tabindex="-1"><span class="wk-tn">${c.no}</span><span class="wk-tt">${c.title}</span><span class="wk-tg" aria-hidden="true">→</span><span class="wk-prog"><i></i></span></button></li>`);
     info.insertAdjacentHTML("beforeend", `<div class="wk-inf" data-i="${i}"><p class="wk-kick">Build ${c.no} <span>of ${pad(N)}</span></p><h2>${c.title}</h2><p class="wk-lead">${T(c.lead)}</p>
-      <div class="wk-ctarow"><a class="wk-cta" href="${ROUTE.href("work/" + id)}" data-case="${id}">Read the case study <span aria-hidden="true">→</span></a><span class="wk-contact"><a href="mailto:suhail@abuosba.com">Email</a><a href="#">CV</a></span></div></div>`);
+      <div class="wk-ctarow"><a class="wk-cta" href="${ROUTE.href("work/" + id)}" data-case="${id}">Read the case study <span aria-hidden="true">→</span></a><span class="wk-contact"><a href="mailto:hello@abuosba.com">Email</a><a href="https://www.linkedin.com/in/abuosba" rel="me">LinkedIn</a></span></div></div>`);
     apps.insertAdjacentHTML("beforeend", `<span class="wk-app" data-i="${i}"><i></i><b>${APP[id][0]}</b><span>· ${APP[id][1]}</span></span>`);
     factss.insertAdjacentHTML("beforeend", `<dl class="wk-facts" data-i="${i}">${facts(c)}</dl>`);
     const sl = document.createElement("div"); sl.className = "wk-slide"; sl.dataset.id = id; sl.hidden = true; view.append(sl);
@@ -347,7 +347,7 @@
   const C = q(".wk-case");
   function caseHTML(id) {
     const i = ids.indexOf(id), c = CASES[id], nx = CASES[ids[(i + 1) % N]];
-    const secs = [["The problem", "[Two or three sentences on what was broken or missing, and who it hurt.]"], ["What I built", "[What it does, in plain words. One sentence on the part you're proudest of.]"], ["What changed", "[The result in numbers, and who still uses it.]"]];
+    const secs = ["The problem", "What I built", "What changed"].map((h, k) => [h, c.secs[k]]);
     return `<div class="wk-cbar"><button type="button" data-close><span aria-hidden="true">←</span> All builds</button><span class="wk-cnum">Build ${c.no} / ${pad(N)}</span><button type="button" data-cnext>Next build <span aria-hidden="true">→</span></button></div>
       <div class="wk-cin">
         <div class="wk-chero"><div class="wk-frame wk-cframe"><div class="wk-chrome"><span class="wk-apps"><span class="wk-app on"><i></i><b>${APP[id][0]}</b><span>· ${APP[id][1]}</span></span></span><span class="wk-livet"><span class="wk-dot"></span><span>Live mock<span class="wk-sd"> · sample data</span></span></span></div><div class="wk-view"></div></div></div>
