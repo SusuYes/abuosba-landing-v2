@@ -5,6 +5,9 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+  # the vault repo can rebuild the site when a thought changes (see README)
+  repository_dispatch:
+    types: [thoughts]
 
 permissions:
   contents: read
@@ -17,8 +20,20 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # set when the vault is checked out below; otherwise the build uses src/content/thoughts
+      THOUGHTS_DIR: ${{ vars.THOUGHTS_REPO != '' && format('vault/{0}', vars.THOUGHTS_PATH) || '' }}
     steps:
       - uses: actions/checkout@v5
+
+      # Thoughts come from the Obsidian vault's private repo, when one is set up (repo variable THOUGHTS_REPO,
+      # its posts folder THOUGHTS_PATH, and a read-only token in the secret THOUGHTS_TOKEN)
+      - uses: actions/checkout@v5
+        if: vars.THOUGHTS_REPO != ''
+        with:
+          repository: ${{ vars.THOUGHTS_REPO }}
+          token: ${{ secrets.THOUGHTS_TOKEN }}
+          path: vault
 
       - uses: actions/setup-node@v5
         with:

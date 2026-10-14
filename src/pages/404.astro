@@ -1,18 +1,11 @@
 ---
-import Base from "../layouts/Base.astro";
-import Qamariya from "../components/Qamariya.astro";
+/* Any address that isn't on the map. GitHub Pages serves this for every missing path, keeping the address, so the
+   page script shows the lost page for it, in Arabic under /ar/. */
+import Shell from "../layouts/Shell.astro";
 ---
-<Base title="Not found">
-  <section class="lost wrap">
-    <div data-reveal><Qamariya size={320} /></div>
-    <span class="lb" data-reveal style="--i:1">404</span>
-    <h1 class="display" data-reveal style="--i:2">Lost among the stars.</h1>
-    <p class="lede" data-reveal style="--i:3">This page isn't here, or it moved.</p>
-    <div class="btns" data-reveal style="--i:4"><a class="btn solid" href="/">Take me home</a></div>
-  </section>
-</Base>
-
-<style>
-  .lost { min-height: 70vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 20px; padding-block: 80px; }
-  .lost > div:first-child { width: 100%; }
-</style>
+<Shell lang="en" key={null}>
+  <Fragment slot="noscript">
+    <h1>This page isn't on the map.</h1>
+    <p>The link may be old, or the page has moved. <a href="/">Back to tonight</a>.</p>
+  </Fragment>
+</Shell>

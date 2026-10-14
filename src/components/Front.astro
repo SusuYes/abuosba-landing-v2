@@ -1,0 +1,87 @@
+---
+/* The one page every address opens: the night (top bar, the front, the reader for inner pages) and the day (Work).
+   The page script fills and moves it; this is its markup, from the concept (v42). */
+import { href, type Lang } from "../lib/site";
+interface Props { lang: Lang; other: string; draw: string }
+const { lang, other, draw } = Astro.props;
+const h = (k: string) => href(k, lang);
+---
+<canvas id="sky"></canvas>
+
+<header id="top">
+  <a class="who" href={h("")} id="home"><span class="mk still land" id="mark"><Fragment set:html={draw} /></span><span class="nm enter" style="--i:0">Suhail AbuOsba</span></a>
+  <div class="hr enter" style="--i:1"><button class="byday" type="button" data-work><span class="sunico" aria-hidden="true"></span><span class="lbl">By day · the work</span></button><a href={other} lang="ar">عربي</a></div>
+</header>
+
+<main id="page">
+  <div class="col">
+    <section class="welcome enter" style="--i:2" id="welcome"></section>
+    <section class="blk wide enter" style="--i:3">
+      <h2 class="hd">Thoughts<a href={h("notes")} data-open="notes">All →</a></h2>
+      <div class="row" id="car"></div>
+      <div class="dots" id="dots" aria-hidden="true"></div>
+    </section>
+    <section class="blk shelf enter" style="--i:4">
+      <h2 class="hd">On the shelf<a href={h("shelf")} data-open="shelf" id="sh-all"></a></h2>
+      <div class="sh" id="shelf"></div>
+    </section>
+    <nav class="more enter" style="--i:5" aria-label="More">
+      <a href={h("notes")} data-open="notes">All thoughts →</a>
+      <a href={h("shelf")} data-open="shelf">The shelf →</a>
+      <a href={h("about")} data-open="about">About →</a>
+      <a href="mailto:hello@abuosba.com">Say hello</a>
+    </nav>
+  </div>
+</main>
+<button class="mwork land" type="button" data-work><span><span class="k">By day<b>نهاراً</b></span><strong>The work →</strong></span><span class="sunico" style="width:30px;height:30px" aria-hidden="true"></span></button>
+
+<article class="reader" id="reader" aria-label="Reading">
+  <div class="bar"><div class="r-l"><button class="pill" type="button" id="r-back">← Tonight</button><nav class="r-nav" aria-label="Pages"><a href={h("notes")} data-open="notes" data-pg="notes">Thoughts</a><a href={h("shelf")} data-open="shelf" data-pg="shelf">The shelf</a><a href={h("about")} data-open="about" data-pg="about">About</a><a href={other} lang="ar">عربي</a></nav></div><span class="k" id="r-k"></span><span class="r-prog" aria-hidden="true"><i></i></span></div>
+  <div class="in" id="r-in"></div>
+</article>
+
+<section id="work" class="wk" aria-label="Work" tabindex="-1" hidden>
+  <div class="wk-ground" aria-hidden="true">
+    <svg class="wk-hills" viewBox="0 0 1440 120" preserveAspectRatio="none">
+      <path fill="rgba(168,121,44,.055)" d="M0 70 C120 52 210 40 320 58 C430 76 520 30 640 34 C760 38 820 70 940 62 C1060 54 1150 26 1260 36 C1350 44 1400 58 1440 54 V120 H0Z"/>
+      <path fill="rgba(43,42,82,.045)" d="M0 92 C90 84 180 70 300 80 C420 90 500 72 610 74 C720 76 800 96 930 90 C1060 84 1150 70 1270 76 C1360 80 1410 90 1440 88 V120 H0Z"/>
+    </svg>
+  </div>
+  <div class="wk-shell">
+    <header class="wk-bar wk-r" style="--i:0">
+      <a class="wk-brand" href={h("work")} aria-label="Suhail AbuOsba, Work">
+        <svg class="wk-sun" viewBox="0 0 24 24" aria-hidden="true"><g stroke="#a8792c" stroke-width="1.5" stroke-linecap="round"><path d="M12 1.6v2.6M12 19.8v2.6M1.6 12h2.6M19.8 12h2.6M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8"/></g><circle cx="12" cy="12" r="4.6" fill="#f0b93a"/><circle cx="12" cy="12" r="4.6" fill="none" stroke="#a8792c" stroke-width="1"/></svg>
+        <span class="wk-nm">Suhail AbuOsba<i>Work</i></span><span class="wk-sep"></span><span class="wk-sec">Work</span>
+      </a>
+      <nav class="wk-links" aria-label="Work">
+        <button class="wk-back" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.2 3.2a8.8 8.8 0 1 0 5.6 15.1A7.2 7.2 0 0 1 15.2 3.2z" fill="#2b2a52"/><circle cx="19.5" cy="5" r=".9" fill="#a8792c"/></svg><span class="wk-ar" aria-hidden="true">←</span><span class="wk-lg">Back to the night</span><span class="wk-sh">The night</span></button>
+        <a href="mailto:suhail@abuosba.com">Email</a>
+        <a href="#" data-cv>CV</a>
+        <a href={other} lang="ar" class="wk-lang">عربي</a>
+      </nav>
+    </header>
+    <main class="wk-main">
+      <p class="wk-pos wk-r" style="--i:1">Automations, APIs, data pipelines and dashboards <em>for universities.</em></p>
+      <div class="wk-idx wk-r" style="--i:2">
+        <div class="wk-idxh"><span>Selected builds</span><b data-count>01 / 03</b></div>
+        <ol class="wk-tabs" role="tablist" aria-label="Builds"></ol>
+      </div>
+      <div class="wk-info wk-r" style="--i:3" aria-live="polite"></div>
+      <div class="wk-stage wk-r" style="--i:2">
+        <div class="wk-frame" id="wk-stage" role="tabpanel" tabindex="-1" aria-label="Live preview of the build">
+          <div class="wk-chrome"><span class="wk-apps"></span><span class="wk-livet"><span class="wk-dot"></span><span class="wk-sample">Live mock<span class="wk-sd"> · sample data</span></span><span class="wk-open">Open the case study ↗</span></span></div>
+          <div class="wk-view"></div>
+        </div>
+        <div class="wk-under">
+          <div class="wk-factss"></div>
+          <div class="wk-pn"><span class="wk-keys">← → to browse</span>
+            <button type="button" data-prev aria-label="Previous build"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13 8H3M7 4L3 8l4 4"/></svg></button>
+            <button type="button" data-next aria-label="Next build"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <div class="wk-veil" aria-hidden="true"></div>
+  <article class="wk-case" hidden aria-label="Case study"></article>
+</section>
