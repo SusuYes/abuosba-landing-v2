@@ -10,7 +10,7 @@
   const car = $("#car");
   const card = (id, i, dup) => { const n = NOTES[id]; return `<button class="note" type="button" data-open="note/${id}"${dup ? ' aria-hidden="true" tabindex="-1"' : ""}><small>${i === 0 ? "<b>Latest</b> · " : ""}${when(n)}</small><h2>${n.title}</h2><p>${excerpt(id)}</p></button>`; };
   // nothing yet in this language: say so plainly (the Arabic is written here, not looked up)
-  const none = () => `<p class="none" data-i18n-skip>${ROUTE.lang() === "ar" ? "لا خواطر بالعربية بعد." : "Nothing written yet."}</p>`;
+  const none = () => `<p class="none" data-i18n-skip>${ROUTE.lang() === "ar" ? "لا خواطر بالعربية بعد." : "Nothing written yet. When I write something, it will appear here."}</p>`;
   function renderCar() { order(); car.innerHTML = NO.length ? NO.map((id, i) => card(id, i)).join("") : none(); dots.innerHTML = ""; dotsSync(); }
   // when there are more than fit: swipe on a phone, drag or scroll with a mouse, and the dots say where you are
   const dots = $("#dots");
@@ -27,16 +27,54 @@
   addEventListener("pointerup", () => { if (dragX === null) return; dragX = null; car.style.scrollSnapType = ""; });
   car.addEventListener("click", (e) => { if (moved > 6) { e.stopPropagation(); e.preventDefault(); moved = 0; } }, true);
   /* the shelf: Suhail's books and records, face out, oldest first. img is the real cover (public/covers/);
-     without one, the cover is drawn from cv: background, text, accent and a motif. when is the date a book was read. */
+     without one, the cover is drawn from cv: background, text, accent and a motif. when is the year a book was read. */
   const SH = [
-    { t: "The Tipping Point", img: "/covers/tipping-point.jpg", by: "Malcolm Gladwell", y: 2000, when: "9 Feb 2025", sub: "How little things can make a big difference", cv: ["#f3efe6", "#1b1b1b", "#d2452b", "match"] },
-    { t: "Tuesdays with Morrie", img: "/covers/tuesdays-with-morrie.jpg", by: "Mitch Albom", y: 1997, when: "23 May 2025", sub: "An old man, a young man, and life's greatest lesson", cv: ["linear-gradient(180deg,#bcd3e2,#f1eee6 70%)", "#24364a", "#7a9cb8", "sky"], r: 2 },
-    { t: "The God Delusion", img: "/covers/god-delusion.jpg", by: "Richard Dawkins", y: 2006, when: "4 Nov 2025", cv: ["#13161f", "#f1ece2", "#c9a14a", "line"], r: -2 },
-    { t: "Animal Farm", img: "/covers/animal-farm.jpg", by: "George Orwell", y: 1945, when: "17 Jul 2026", sub: "A fairy story", cv: ["#c4432b", "#f6ead2", "#f2b6a6", "dot"], r: 1 },
-    { t: "1984", img: "/covers/1984.jpg", by: "George Orwell", y: 1949, now: 1, cv: ["#111216", "#e8e2d6", "#c4302b", "eye"], r: 5 },
+    { t: "And Then There Were None", by: "Agatha Christie", y: 1939, when: "2012", cv: ["#efe6d2", "#2a2320", "#9b3b2a", "line"] },
+    { t: "The Hostage", by: "Zayd Mutee' Dammaj", when: "2013", cv: ["#1f2a3a", "#efe6d2", "#d9b25a", "sky"], r: 2 },
+    { t: "A Tale of Two Cities", by: "Charles Dickens", y: 1859, when: "2013", cv: ["#6b2d2a", "#f5e7d3", "#e2a46a", "dot"], r: -2 },
+    { t: "Tuesdays with Morrie", img: "/covers/tuesdays-with-morrie.jpg", by: "Mitch Albom", y: 1997, when: "2014", sub: "An old man, a young man, and life's greatest lesson", cv: ["linear-gradient(180deg,#bcd3e2,#f1eee6 70%)", "#24364a", "#7a9cb8", "sky"], r: 1 },
+    { t: "Animal Farm", img: "/covers/animal-farm.jpg", by: "George Orwell", y: 1945, when: "2014", sub: "A fairy story", cv: ["#c4432b", "#f6ead2", "#f2b6a6", "dot"], r: -1 },
+    { t: "A Thousand Splendid Suns", by: "Khaled Hosseini", y: 2007, when: "2014", cv: ["#f2d9c4", "#3a2018", "#c0563a", "sky"], r: 3 },
+    { t: "The Fault in Our Stars", by: "John Green", y: 2012, when: "2014", cv: ["#13202f", "#e6ecf2", "#7fa6c8", "dot"] },
+    { t: "Paper Towns", by: "John Green", y: 2008, when: "2015", cv: ["#c9a66b", "#231a10", "#5b3a1c", "line"], r: 2 },
+    { t: "Human Universe", by: "Brian Cox and Andrew Cohen", y: 2014, when: "2015", cv: ["#efe6d2", "#2a2320", "#9b3b2a", "line"], r: -2 },
+    { t: "The God Delusion", img: "/covers/god-delusion.jpg", by: "Richard Dawkins", y: 2006, when: "2016", cv: ["#13161f", "#f1ece2", "#c9a14a", "line"], r: 1 },
+    { t: "Looking for Alaska", by: "John Green", y: 2005, when: "2016", cv: ["#6b2d2a", "#f5e7d3", "#e2a46a", "dot"], r: -1 },
+    { t: "Wildly into the Dark", by: "Tyler Knott Gregson", when: "2016", sub: "Typewriter poems and the rattlings of a curious mind", cv: ["#e8eef0", "#1c2a33", "#3f7d8c", "match"], r: 3 },
+    { t: "The Alchemist", by: "Paulo Coelho", y: 1988, when: "2017", cv: ["#2d3b2e", "#eee7d4", "#b9c48a", "eye"] },
+    { t: "Chasers of the Light", by: "Tyler Knott Gregson", y: 2014, when: "2017", sub: "Poems from the typewriter series", cv: ["#f2d9c4", "#3a2018", "#c0563a", "sky"], r: 2 },
+    { t: "The Rules of Magic", by: "Alice Hoffman", y: 2017, when: "2017", cv: ["#13202f", "#e6ecf2", "#7fa6c8", "dot"], r: -2 },
+    { t: "The Quantum Universe", by: "Brian Cox and Jeff Forshaw", y: 2011, when: "2017", sub: "Everything that can happen does happen", cv: ["#c9a66b", "#231a10", "#5b3a1c", "line"], r: 1 },
+    { t: "All the Words Are Yours", by: "Tyler Knott Gregson", when: "2017", sub: "Haiku on love", cv: ["#efe6d2", "#2a2320", "#9b3b2a", "line"], r: -1 },
+    { t: "The Five People You Meet in Heaven", by: "Mitch Albom", y: 2003, when: "2017", cv: ["#1f2a3a", "#efe6d2", "#d9b25a", "sky"], r: 3 },
+    { t: "The Tipping Point", img: "/covers/tipping-point.jpg", by: "Malcolm Gladwell", y: 2000, when: "2018", sub: "How little things can make a big difference", cv: ["#f3efe6", "#1b1b1b", "#d2452b", "match"] },
+    { t: "1984", img: "/covers/1984.jpg", by: "George Orwell", y: 1949, when: "2018", cv: ["#111216", "#e8e2d6", "#c4302b", "eye"], r: 2 },
+    { t: "All the Bright Places", by: "Jennifer Niven", y: 2015, when: "2018", cv: ["#2d3b2e", "#eee7d4", "#b9c48a", "eye"], r: -2 },
+    { t: "I Wrote This for You", by: "pleasefindthis", when: "2018", cv: ["#f2d9c4", "#3a2018", "#c0563a", "sky"], r: 1 },
+    { t: "The Kingfisher Secret", by: "Anonymous", y: 2019, when: "2019", cv: ["#13202f", "#e6ecf2", "#7fa6c8", "dot"], r: -1 },
+    { t: "The Next Person You Meet in Heaven", by: "Mitch Albom", y: 2018, when: "2019", cv: ["#c9a66b", "#231a10", "#5b3a1c", "line"], r: 3 },
+    { t: "Why Does E=mc²?", by: "Brian Cox and Jeff Forshaw", y: 2009, when: "2020", sub: "And why should we care?", cv: ["#efe6d2", "#2a2320", "#9b3b2a", "line"] },
+    { rec: 1, t: "Ahwak", by: "Abdel Halim Hafez", cv: ["linear-gradient(160deg,#f3d36b,#e3a23a 60%,#a5621c)", "#2a1a08", "#f0b93a", ""] },
+    { rec: 1, t: "Parachutes", by: "Coldplay", y: 2000, cv: ["radial-gradient(circle at 60% 40%,#9cc6e0,transparent 55%),linear-gradient(180deg,#1b3a5a,#0c1b2c)", "#eaf4fb", "#f0b93a", ""] },
+    { rec: 1, t: "A Rush of Blood to the Head", by: "Coldplay", y: 2002, cv: ["linear-gradient(135deg,#e85d75,#7a3db8)", "#fff", "#f0b93a", ""] },
+    { rec: 1, t: "X&Y", by: "Coldplay", y: 2005, cv: ["conic-gradient(from 90deg,#2f6f6a,#a7d1b8,#2f6f6a)", "#f4fbf8", "#f0b93a", ""] },
+    { rec: 1, t: "Viva la Vida or Death and All His Friends", by: "Coldplay", y: 2008, cv: ["linear-gradient(180deg,#f7efe2,#d8c3a4)", "#3a2b1c", "#f0b93a", ""] },
+    { rec: 1, t: "Tonight", by: "FM Static", cv: ["radial-gradient(circle at 30% 70%,#f0b93a,transparent 50%),linear-gradient(200deg,#3b2a6b,#14102a)", "#fbe9c6", "#f0b93a", ""] },
+    { rec: 1, t: "Mylo Xyloto", by: "Coldplay", y: 2011, cv: ["linear-gradient(160deg,#3a3a3a,#111)", "#eee", "#f0b93a", ""] },
+    { rec: 1, t: "Ghost Stories", by: "Coldplay", y: 2014, cv: ["linear-gradient(160deg,#f3d36b,#e3a23a 60%,#a5621c)", "#2a1a08", "#f0b93a", ""] },
+    { rec: 1, t: "A Head Full of Dreams", by: "Coldplay", y: 2015, cv: ["radial-gradient(circle at 60% 40%,#9cc6e0,transparent 55%),linear-gradient(180deg,#1b3a5a,#0c1b2c)", "#eaf4fb", "#f0b93a", ""] },
+    { rec: 1, t: "Go Farther in Lightness", by: "Gang of Youths", y: 2017, cv: ["linear-gradient(135deg,#e85d75,#7a3db8)", "#fff", "#f0b93a", ""] },
+    { rec: 1, t: "Blood Harmony", by: "FINNEAS", y: 2019, cv: ["conic-gradient(from 90deg,#2f6f6a,#a7d1b8,#2f6f6a)", "#f4fbf8", "#f0b93a", ""] },
+    { rec: 1, t: "Everyday Life", by: "Coldplay", y: 2019, cv: ["linear-gradient(180deg,#f7efe2,#d8c3a4)", "#3a2b1c", "#f0b93a", ""] },
+    { rec: 1, t: "Optimist", by: "FINNEAS", y: 2021, cv: ["radial-gradient(circle at 30% 70%,#f0b93a,transparent 50%),linear-gradient(200deg,#3b2a6b,#14102a)", "#fbe9c6", "#f0b93a", ""] },
+    { rec: 1, t: "Music of the Spheres", by: "Coldplay", y: 2021, cv: ["linear-gradient(160deg,#3a3a3a,#111)", "#eee", "#f0b93a", ""] },
+    { rec: 1, t: "The Money Game", by: "Ren", cv: ["linear-gradient(160deg,#f3d36b,#e3a23a 60%,#a5621c)", "#2a1a08", "#f0b93a", ""] },
+    { rec: 1, t: "Violet's Tale", by: "Ren", cv: ["radial-gradient(circle at 60% 40%,#9cc6e0,transparent 55%),linear-gradient(180deg,#1b3a5a,#0c1b2c)", "#eaf4fb", "#f0b93a", ""] },
+    { rec: 1, t: "Hi Ren", by: "Ren", cv: ["linear-gradient(135deg,#e85d75,#7a3db8)", "#fff", "#f0b93a", ""] },
     { rec: 1, t: "Moon Music", img: "/covers/moon-music.jpg", by: "Coldplay", y: 2024, cv: ["radial-gradient(circle at 30% 30%,#f7c6a0,transparent 45%),radial-gradient(circle at 75% 70%,#7a5cc8,transparent 50%),conic-gradient(from 200deg,#e86a8a,#f0b93a,#5bb3a8,#4a63c8,#a04ab0,#e86a8a)", "#fff", "#f0b93a", ""] },
     { rec: 1, t: "For Cryin' Out Loud!", img: "/covers/finneas-fcol.jpg", by: "FINNEAS", y: 2024, cv: ["linear-gradient(160deg,#d7a868,#8a5530 70%,#4a2a18)", "#fbf1e0", "#d7a868", ""] },
-    { rec: 1, t: "Hit Me Hard and Soft", img: "/covers/hmhas.jpg", by: "Billie Eilish", y: 2024, now: 1, cv: ["radial-gradient(ellipse at 50% 0,#3d8cc0,transparent 60%),linear-gradient(180deg,#0d4c7a,#072a48 75%,#03162a)", "#eaf4fb", "#3d8cc0", ""] },
+    { rec: 1, t: "Hit Me Hard and Soft", img: "/covers/hmhas.jpg", by: "Billie Eilish", y: 2024, cv: ["radial-gradient(ellipse at 50% 0,#3d8cc0,transparent 60%),linear-gradient(180deg,#0d4c7a,#072a48 75%,#03162a)", "#eaf4fb", "#3d8cc0", ""] },
+    { rec: 1, t: "The Dream", by: "The Favors", y: 2025, cv: ["linear-gradient(160deg,#3a3a3a,#111)", "#eee", "#f0b93a", ""] },
   ];
   /* A shelf of items (oldest first). Front page: a crate that only holds the latest few, with the rest in a pile that
      opens the whole shelf. Full shelf (wrap): rows of boards, newest first. Picking works the same in both. */
@@ -67,7 +105,7 @@
     const pick = (i, quiet) => {
       if (i === on) return; on = i;
       btns.forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.i === i)));
-      const x = items[i], kind = x.rec ? `${x.now ? '<span class="nd"></span>Listening now · ' : ""}Released ${x.y}` : x.now ? '<span class="nd"></span>Reading now' : `Read · ${x.when}`;
+      const x = items[i], kind = x.rec ? `${x.now ? '<span class="nd"></span>Listening now · ' : ""}${x.y ? `Released ${x.y}` : "On the shelf"}` : x.now ? '<span class="nd"></span>Reading now' : `Read · ${x.when}`;
       const fill = () => { cap.innerHTML = `<small>${kind}${touched || wrap ? "" : `<span class="hint">${touchy ? "Tap" : "Pick"} another</span>`}</small><p><em>${x.t}</em> ${x.rec ? "·" : "by"} ${x.by}</p>${x.sub ? `<span class="why">${x.sub}</span>` : ""}`; cap.classList.remove("out"); };
       if (wrap) {
         // rows of a fixed grid: carry a book in the first column right (its cover opens left), a record in the last column left (its disc slides right)
@@ -169,7 +207,7 @@
     },
     shelf(tab) {
       const bk = SH.filter((x) => !x.rec).reverse(), rc = SH.filter((x) => x.rec).reverse(), m = tab === "music";
-      const log = (xs, music) => xs.map((x) => `<li${x.now ? ' class="now"' : ""}><span>${x.now ? (music ? "Listening now" : "Reading now") : music ? `Released ${x.y}` : (x.when || T("[Month Year]"))}</span><b>${x.t}</b><i>${music ? x.by : "by " + x.by}</i></li>`).join("");
+      const log = (xs, music) => xs.map((x) => `<li${x.now ? ' class="now"' : ""}><span>${x.now ? (music ? "Listening now" : "Reading now") : music ? (x.y ? `Released ${x.y}` : "On the shelf") : (x.when || T("[Month Year]"))}</span><b>${x.t}</b><i>${music ? x.by : "by " + x.by}</i></li>`).join("");
       const go = (t) => {
         const music = t === "music";
         $$(".sh-tabs button").forEach((b) => b.setAttribute("aria-selected", String((b.dataset.tab === "music") === music)));
@@ -188,12 +226,12 @@
       const rb = SH.find((x) => x.now && !x.rec), rm = SH.find((x) => x.now && x.rec), lt = NO[0];
       return [`About`, `<div class="ab"><div class="ab-mk"><span class="mk" aria-hidden="true">${$("#tpl-mark").innerHTML}</span><h1>Suhail AbuOsba<b lang="ar" data-i18n-skip>سهيل ابواصبع</b></h1><p>Named for a star.</p></div>
         <div class="ab-in">
-          <section class="ab-s"><h2>The name</h2><div><p>Suhail is the Arabic name for Canopus, the second-brightest star in the night sky. In Yemen its first rising before dawn is read as the turn of the season.</p><p>${suhailLine()}</p></div></section>
+          <section class="ab-s"><h2>The name</h2><div><p>Suhail is Canopus, the second-brightest star in the night sky. Across Arabia, its rising before dawn in late summer is traditionally taken as the sign that summer's heat is breaking.</p><p>${suhailLine()}</p></div></section>
           <section class="ab-s"><h2>The mark</h2><div><p>An astrolabe, the old instrument for reading the sky. The letters of سهيل form its rete, the turning star map on top.</p></div></section>
-          <section class="ab-s"><h2>Me</h2><div><p>${T("[Two or three lines in your own words: where you are from, what you do by day, what keeps you up at night.]")}</p></div></section>
-          <section class="ab-s"><h2>By day</h2><div><p>Automations, APIs, data pipelines and dashboards for universities.</p><button class="day" type="button" data-work><span class="sunico" aria-hidden="true"></span>See the work</button></div></section>
-          <section class="ab-s"><h2>Now</h2><div><dl>${rb ? `<dt>Reading</dt><dd><a href="${ROUTE.href("shelf")}" data-open="shelf/books">${rb.t}</a>, ${rb.by}</dd>` : ""}${rm ? `<dt>Listening</dt><dd><a href="${ROUTE.href("shelf/music")}" data-open="shelf/music">${rm.t}</a>, ${rm.by}</dd>` : ""}${lt ? `<dt>Writing</dt><dd><a href="${ROUTE.href("note/" + lt)}" data-open="note/${lt}">${NOTES[lt].title}</a></dd>` : ""}</dl></div></section>
-          <section class="ab-s"><h2>Elsewhere</h2><div><dl><dt>Email</dt><dd><a href="mailto:hello@abuosba.com">hello@abuosba.com</a></dd><dt>CV</dt><dd>${T("[link to your CV]")}</dd><dt>Online</dt><dd>${T("[GitHub, LinkedIn, or nothing]")}</dd></dl>
+          <section class="ab-s"><h2>Me</h2><div><p>I grew up in Yemen and moved to Australia in 2016 for university. By day I work on data, systems and automation for a university's student engagement team. At night I build things for myself: a home server lab, home-automation dashboards, apps for tracking my flights and money, a 3D-printing setup, and this site.</p></div></section>
+          <section class="ab-s"><h2>By day</h2><div><p>Data, systems and automation for a university's student engagement team: dashboards, data pipelines, Power Apps and flows.</p><button class="day" type="button" data-work><span class="sunico" aria-hidden="true"></span>See the work</button></div></section>
+          ${rb || rm || lt ? `<section class="ab-s"><h2>Now</h2><div><dl>${rb ? `<dt>Reading</dt><dd><a href="${ROUTE.href("shelf")}" data-open="shelf/books">${rb.t}</a>, ${rb.by}</dd>` : ""}${rm ? `<dt>Listening</dt><dd><a href="${ROUTE.href("shelf/music")}" data-open="shelf/music">${rm.t}</a>, ${rm.by}</dd>` : ""}${lt ? `<dt>Writing</dt><dd><a href="${ROUTE.href("note/" + lt)}" data-open="note/${lt}">${NOTES[lt].title}</a></dd>` : ""}</dl></div></section>` : ""}
+          <section class="ab-s"><h2>Elsewhere</h2><div><dl><dt>Email</dt><dd><a href="mailto:hello@abuosba.com">hello@abuosba.com</a></dd><dt>Online</dt><dd><a href="https://www.linkedin.com/in/abuosba" rel="me">LinkedIn</a></dd></dl>
             <p class="ab-col">Set in Alegreya and Noto Naskh Arabic. The page takes the colour of your sky.</p></div></section>
         </div></div>`, null, "about", true];
     },

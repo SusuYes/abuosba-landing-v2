@@ -29,7 +29,6 @@ window.Welcome = (root, V) => {
     ["We are all in the gutter, but some of us are looking at the stars.", "Oscar Wilde", "", "كلنا في الحضيض، لكن بعضنا ينظر إلى النجوم.", "أوسكار وايلد"],
     ["He who has a why to live for can bear almost any how.", "Nietzsche", "", "من يملك سبباً يعيش من أجله يحتمل أيّ كيفٍ تقريباً.", "نيتشه"],
     ["We are a way for the cosmos to know itself.", "Carl Sagan", "", "نحن طريقة الكون ليعرف نفسه.", "كارل ساغان"],
-    ["The winds blow as the ships would not wish.", "al-Mutanabbi", "تجري الرياح بما لا تشتهي السفن", "تجري الرياح بما لا تشتهي السفن", "المتنبي"],
     ["On this earth is what makes life worth living.", "Mahmoud Darwish", "على هذه الأرض ما يستحق الحياة", "على هذه الأرض ما يستحق الحياة", "محمود درويش"],
   ];
   const words = (h) => h.replace(/(<[^>]+>)|([^<\s]+)/g, (m, tag, w) => tag || `<b>${w}</b>`);

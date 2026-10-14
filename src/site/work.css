@@ -326,6 +326,8 @@
 #work .wk-nar .wm-top { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
 #work .wk-nar .wm-st .wm-big { font-size: 26px; }
 #work .wk-nar .wm-st b { font-size: 18px; }
+#work .wk-nar .wm-sub { white-space: normal; line-height: 1.3; }
+#work .wk-nar .wm-st { min-width: 0; }
 #work .wk-nar .wm-sub { font-size: 9.5px; }
 #work .wk-nar .wm-body { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; grid-template-areas: "q" "f"; }
 #work .wk-nar .wm-rooms { display: none; }
