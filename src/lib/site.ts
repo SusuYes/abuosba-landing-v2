@@ -7,7 +7,7 @@ export const NAME = { en: "Suhail AbuOsba", ar: "سهيل ابواصبع" };
 
 // the builds on the Work page (their words live in src/site/common.js, CASES)
 export const BUILDS: Record<string, { en: string; ar: string }> = {
-  arrivals: { en: "Arrival outreach", ar: "متابعة الوصول" },
+  arrivals: { en: "Arrival outreach", ar: "متابعة الوافدين" },
   hub: { en: "Engagement data", ar: "بيانات المشاركة" },
   events: { en: "Event registry", ar: "سجل الفعاليات" },
 };
@@ -17,17 +17,17 @@ const PAGE: Record<string, { en: string; ar: string }> = {
   shelf: { en: "The shelf", ar: "الرف" },
   about: { en: "About", ar: "عنّي" },
   work: { en: "Work", ar: "العمل" },
-  lost: { en: "Not found", ar: "غير موجودة" },
+  lost: { en: "Not found", ar: "الصفحة غير موجودة" },
 };
 
-const WORK_LINE = { en: "Automations, APIs, data pipelines and dashboards for universities.", ar: "أتمتة وواجهات برمجية وخطوط بيانات ولوحات متابعة للجامعات." };
+const WORK_LINE = { en: "Dashboards, data pipelines and automation for student engagement.", ar: "لوحات معلومات ومسارات بيانات وأتمتة في خدمة المشاركة الطلابية." };
 const DESC: Record<string, { en: string; ar: string }> = {
-  "": { en: "Thoughts written after dark, a shelf of books and records, and by day: " + WORK_LINE.en.charAt(0).toLowerCase() + WORK_LINE.en.slice(1), ar: "خواطر تُكتب بعد حلول الظلام، ورفّ من الكتب والموسيقى، وفي النهار: " + WORK_LINE.ar },
-  notes: { en: "Written after dark. A new one when there is one.", ar: "تُكتب بعد حلول الظلام. جديدةٌ متى وُجدت." },
+  "": { en: "Thoughts written after dark, a shelf of books and records, and by day: " + WORK_LINE.en.charAt(0).toLowerCase() + WORK_LINE.en.slice(1), ar: "خواطر تُكتب بعد أن يحلّ الليل، ورفّ من الكتب والموسيقى، وفي النهار: " + WORK_LINE.ar },
+  notes: { en: "Written after dark. A new one when there is one.", ar: "تُكتب بعد أن يحلّ الليل، وتأتي الجديدة متى جاءت." },
   shelf: { en: "Everything read and played, newest first.", ar: "كل ما قرأته واستمعت إليه، الأحدث أولاً." },
-  about: { en: "Named for a star.", ar: "يحمل اسم نجم." },
+  about: { en: "Named for a star.", ar: "سُمّي على اسم نجم." },
   work: WORK_LINE,
-  lost: { en: "The link may be old, or the page has moved.", ar: "ربما الرابط قديم، أو انتقلت الصفحة." },
+  lost: { en: "The link may be old, or the page has moved.", ar: "ربما كان الرابط قديماً، أو نُقلت الصفحة." },
 };
 
 export function href(key: string, lang: Lang): string {

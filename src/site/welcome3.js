@@ -21,14 +21,14 @@ window.Welcome = (root, V) => {
   /* v26: under the greeting, one thought-provoking saying at a time. Tap for the next. */
   const line = document.createElement("p"); line.className = "duo-line wh"; line.setAttribute("title", "Another"); h1.after(line);
   const Q = [
-    ["The unexamined life is not worth living.", "Socrates", "", "الحياة التي لا تُفحَص لا تستحق أن تُعاش.", "سقراط"],
-    ["No one steps in the same river twice.", "Heraclitus", "", "لا أحد يعبر النهر نفسه مرتين.", "هيراقليطس"],
-    ["What stands in the way becomes the way.", "Marcus Aurelius", "", "ما يقف في الطريق يصير هو الطريق.", "ماركوس أوريليوس"],
-    ["It is not that we have a short time to live, but that we waste a lot of it.", "Seneca", "", "ليست أعمارنا قصيرة، لكننا نهدر كثيراً منها.", "سينيكا"],
+    ["The unexamined life is not worth living.", "Socrates", "", "الحياة التي لا تخضع للفحص لا تستحق أن تُعاش.", "سقراط"],
+    ["No one steps in the same river twice.", "Heraclitus", "", "لا يستطيع المرء أن ينزل النهر نفسه مرتين.", "هيراقليطس"],
+    ["What stands in the way becomes the way.", "Marcus Aurelius", "", "ما يعترض الطريق يصبح هو الطريق.", "ماركوس أوريليوس"],
+    ["It is not that we have a short time to live, but that we waste a lot of it.", "Seneca", "", "ليست أعمارنا قصيرة، لكننا نهدر الكثير منها.", "سينيكا"],
     ["The map is not the territory.", "Alfred Korzybski", "", "الخريطة ليست هي الأرض.", "ألفرد كورزيبسكي"],
-    ["We are all in the gutter, but some of us are looking at the stars.", "Oscar Wilde", "", "كلنا في الحضيض، لكن بعضنا ينظر إلى النجوم.", "أوسكار وايلد"],
-    ["He who has a why to live for can bear almost any how.", "Nietzsche", "", "من يملك سبباً يعيش من أجله يحتمل أيّ كيفٍ تقريباً.", "نيتشه"],
-    ["We are a way for the cosmos to know itself.", "Carl Sagan", "", "نحن طريقة الكون ليعرف نفسه.", "كارل ساغان"],
+    ["We are all in the gutter, but some of us are looking at the stars.", "Oscar Wilde", "", "كلنا في الحضيض، ولكن بعضنا ينظر إلى النجوم.", "أوسكار وايلد"],
+    ["He who has a why to live for can bear almost any how.", "Nietzsche", "", "من لديه «لماذا» يعيش من أجلها، يستطيع أن يحتمل أيّ «كيف» تقريباً.", "نيتشه"],
+    ["We are a way for the cosmos to know itself.", "Carl Sagan", "", "نحن وسيلة الكون ليعرف نفسه.", "كارل ساغان"],
     ["On this earth is what makes life worth living.", "Mahmoud Darwish", "على هذه الأرض ما يستحق الحياة", "على هذه الأرض ما يستحق الحياة", "محمود درويش"],
   ];
   const words = (h) => h.replace(/(<[^>]+>)|([^<\s]+)/g, (m, tag, w) => tag || `<b>${w}</b>`);
