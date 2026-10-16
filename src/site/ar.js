@@ -294,7 +294,7 @@ const AR = (() => {
     + "#reader .pill, #reader .r-nav, #reader .r-hd, #reader .th-list, #reader .th-peek, #reader .ab-mk, #reader .ab-in, #reader .r-pn, "
     + "#work .wk-brand, #work .wk-links, #work .wk-pos, #work .wk-idx, #work .wk-inf.on, #work .wk-stage, #work .wk-cbar > *, #work .wk-chead, #work .wk-chero, #work .wk-csec, #work .wk-cfig";
   const INK = "#top .nm, #top .lbl, #top a[lang], .welcome h1, .duo-line, .bk-c .meta, .blk .hd, #car .note small, #car .note h2, #car .note p, .sh-cap small, .sh-cap p, .sh-cap .why, .more a, .mwork > span, "
-    + "#reader .pill, #reader .r-nav a, #reader .in h1, #reader .in .dek, #reader .in .when, #reader .in > p, #reader .r-hd p, #reader .th-row, #reader .th-peek > div, #reader .ab-mk p, #reader .ab-s, #reader .log li, #reader .sh-tabs, #reader .r-pn a, #reader .r-all, #reader .lost p, #reader .lost nav, "
+    + "#reader .pill, #reader .r-nav a, #reader .in h1, #reader .in .dek, #reader .in .when, #reader .in > p, #reader .nb > *, #reader .r-hd p, #reader .th-row, #reader .th-peek > div, #reader .ab-mk p, #reader .ab-s, #reader .log li, #reader .sh-tabs, #reader .r-pn a, #reader .r-all, #reader .lost p, #reader .lost nav, "
     + "#work .wk-nm, #work .wk-sec, #work .wk-links > *, #work .wk-pos, #work .wk-idxh, #work .wk-tab, #work .wk-inf.on > *, #work .wk-apps, #work .wk-livet, #work .wk-facts.on > div, #work .wk-keys, "
     + "#work .wk-cbar > *, #work .wk-chead .wk-cf, #work .wk-csec, #work .wk-cfig figcaption, #work .wk-cnext";
   let busy = false;
@@ -304,8 +304,8 @@ const AR = (() => {
     if (REDUCE || /\b(rising|setting|dusk)\b/.test(document.body.className)) return setDoc(to);
     busy = true;
     const W = innerWidth, rtl = to === "ar";
-    const ink = [...new Set([...document.querySelectorAll(INK)])].filter((e) => !e.closest(".drafts") && vis(e));
-    const flips = [...document.querySelectorAll(FLIP)].map((e) => [e, vis(e)]).filter(([, r]) => r);
+    let ink = [...new Set([...document.querySelectorAll(INK)])].filter((e) => !e.closest(".drafts") && vis(e));
+    let flips = [...document.querySelectorAll(FLIP)].map((e) => [e, vis(e)]).filter(([, r]) => r);
     // 1. the English dissolves, from the end of the line it was read toward
     const outs = ink.map((e) => { const r = e.getBoundingClientRect(), cx = (r.left + r.right) / 2 / W, d = (rtl ? 1 - cx : cx) * 160;
       return e.animate([{ opacity: 1, filter: "blur(0)", transform: "none" }, { opacity: 0, filter: "blur(4px)", transform: `translateX(${rtl ? -10 : 10}px)` }], { duration: 300, delay: d, easing: "ease-in", fill: "forwards" }); });
@@ -317,6 +317,10 @@ const AR = (() => {
     setTimeout(() => {
       // 2. the page turns to face the other way: each piece glides to its mirrored place
       setDoc(to);
+      /* a change of language can draw a page again (the Thoughts list, a thought and its other-language pair): what was
+         dissolved may be gone, so what is inked is whatever is on screen now, old pieces that stayed and new ones alike */
+      ink = [...new Set([...document.querySelectorAll(INK)])].filter((e) => !e.closest(".drafts") && vis(e));
+      flips = flips.filter(([e]) => e.isConnected);
       const inkR = ink.map((e) => e.getBoundingClientRect()), flipR = flips.map(([e]) => e.getBoundingClientRect()); // measured before anything moves
       flips.forEach(([e, a], j) => { const b = flipR[j], dx = a.left - b.left, dy = a.top - b.top; if (Math.abs(dx) + Math.abs(dy) < 2) return;
         e.animate([{ translate: `${dx}px ${dy}px` }, { translate: "0 0" }], { duration: 820, easing: "cubic-bezier(.65,0,.25,1)", composite: "add" }); });
