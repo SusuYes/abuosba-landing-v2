@@ -10,7 +10,7 @@
   const car = $("#car");
   const card = (id, i, dup) => { const n = NOTES[id]; return `<button class="note" type="button" data-open="note/${id}"${dup ? ' aria-hidden="true" tabindex="-1"' : ""}><small>${i === 0 ? "<b>Latest</b> · " : ""}${when(n)}</small><h2>${n.title}</h2><p>${excerpt(id)}</p></button>`; };
   // nothing yet in this language: say so plainly (the Arabic is written here, not looked up)
-  const none = () => `<p class="none" data-i18n-skip>${ROUTE.lang() === "ar" ? "لا خواطر بالعربية بعد." : "Nothing written yet. When I write something, it will appear here."}</p>`;
+  const none = () => `<p class="none" data-i18n-skip>${ROUTE.lang() === "ar" ? "لم أكتب بالعربية بعد. حين أكتب، ستظهر الخواطر هنا." : "Nothing written yet. When I write something, it will appear here."}</p>`;
   function renderCar() { order(); car.innerHTML = NO.length ? NO.map((id, i) => card(id, i)).join("") : none(); dots.innerHTML = ""; dotsSync(); }
   // when there are more than fit: swipe on a phone, drag or scroll with a mouse, and the dots say where you are
   const dots = $("#dots");
@@ -177,10 +177,10 @@
     let tr = (x) => x; try { tr = (x) => AR.tr(x) || x; } catch (e) {}
     const CMP = { north: "الشمال", "north-east": "الشمال الشرقي", east: "الشرق", "south-east": "الجنوب الشرقي", south: "الجنوب", "south-west": "الجنوب الغربي", west: "الغرب", "north-west": "الشمال الغربي" };
     let en, ar;
-    if (s.kind === "never") { en = `From where you are, Suhail never clears the horizon; you would need to be south of about ${s.need}° north to see it.`; ar = `من حيث أنت، لا يرتفع سهيل فوق الأفق؛ عليك أن تكون جنوب خط العرض ${tr(String(s.need))}° شمالاً تقريباً لتراه.`; }
+    if (s.kind === "never") { en = `From where you are, Suhail never clears the horizon; you would need to be south of about ${s.need}° north to see it.`; ar = `من حيث أنت، لا يرتفع سهيل فوق الأفق أبداً؛ لتراه عليك أن تكون جنوب خط العرض ${tr(String(s.need))}° شمالاً تقريباً.`; }
     else if (s.kind === "always") { en = "From where you are, Suhail never sets."; ar = "من حيث أنت، لا يغيب سهيل أبداً."; }
-    else if (s.kind === "up") { en = `Right now Suhail is above your horizon, in the ${s.dir}${s.dark ? "" : ", though the sky is too bright to see it"}.`; ar = `سهيل الآن فوق أفقك، في ${CMP[s.dir] || s.dir}${s.dark ? "" : "، لكن السماء أشدّ ضوءاً من أن تراه"}.`; }
-    else if (s.rise) { const t = VIS.time(s.rise); en = `From where you are, Suhail next rises at ${t}${s.riseDark ? ", in the dark" : ", in daylight"}.`; ar = `من حيث أنت، يطلع سهيل التالي في ${tr(t)}${s.riseDark ? "، في العتمة" : "، في وضح النهار"}.`; }
+    else if (s.kind === "up") { en = `Right now Suhail is above your horizon, in the ${s.dir}${s.dark ? "" : ", though the sky is too bright to see it"}.`; ar = `سهيل الآن فوق أفقك، جهة ${CMP[s.dir] || s.dir}${s.dark ? "" : "، لكن السماء أسطع من أن تراه"}.`; }
+    else if (s.rise) { const t = VIS.time(s.rise); en = `From where you are, Suhail next rises at ${t}${s.riseDark ? ", in the dark" : ", in daylight"}.`; ar = `من حيث أنت، يطلع سهيل مجدداً عند ${tr(t)}${s.riseDark ? "، والسماء مظلمة" : "، في وضح النهار"}.`; }
     else return "";
     return `<span class="ab-live" data-ar="${esc(ar)}">${en}</span>`;
   }
@@ -234,7 +234,7 @@
         <div class="ab-in">
           <section class="ab-s"><h2>The name</h2><div><p>Suhail is Canopus, the second-brightest star in the night sky. Across Arabia, its rising before dawn in late summer is traditionally taken as the sign that summer's heat is breaking.</p><p>${suhailLine()}</p></div></section>
           <section class="ab-s"><h2>The mark</h2><div><p>An astrolabe, the old instrument for reading the sky. The letters of سهيل form its rete, the turning star map on top.</p></div></section>
-          <section class="ab-s"><h2>Me</h2><div><p>I grew up in Yemen and moved to Australia in 2016 for university. By day I work on data, systems and automation for a university's student engagement team. At night I build things for myself: a home server lab, home-automation dashboards, apps for tracking my flights and money, a 3D-printing setup, and this site.</p></div></section>
+          <section class="ab-s"><h2>Me</h2><div><p>I moved to Australia in 2016 for university. By day I work on data, systems and automation for a university's student engagement team. At night I build things for myself: a home server lab, home-automation dashboards, apps for tracking my flights and money, a 3D-printing setup, and this site.</p></div></section>
           <section class="ab-s"><h2>By day</h2><div><p>Data, systems and automation for a university's student engagement team: dashboards, data pipelines, Power Apps and flows.</p><button class="day" type="button" data-work><span class="sunico" aria-hidden="true"></span>See the work</button></div></section>
           ${rb || rm || lt ? `<section class="ab-s"><h2>Now</h2><div><dl>${rb ? `<dt>Reading</dt><dd><a href="${ROUTE.href("shelf")}" data-open="shelf/books">${rb.t}</a>, ${rb.by}</dd>` : ""}${rm ? `<dt>Listening</dt><dd><a href="${ROUTE.href("shelf/music")}" data-open="shelf/music">${rm.t}</a>, ${rm.by}</dd>` : ""}${lt ? `<dt>Writing</dt><dd><a href="${ROUTE.href("note/" + lt)}" data-open="note/${lt}">${NOTES[lt].title}</a></dd>` : ""}</dl></div></section>` : ""}
           <section class="ab-s"><h2>Elsewhere</h2><div><dl><dt>Email</dt><dd><a href="mailto:hello@abuosba.com">hello@abuosba.com</a></dd><dt>Online</dt><dd><a href="https://www.linkedin.com/in/abuosba" rel="me">LinkedIn</a></dd></dl>

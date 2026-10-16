@@ -25,7 +25,7 @@ const ROUTE = (() => {
     return (l === "ar" ? "/ar/" : "/") + s;
   }
   const NAME = "Suhail AbuOsba", NAME_AR = "سهيل ابواصبع";
-  const PAGE = { notes: ["Thoughts", "خواطر"], shelf: ["The shelf", "الرف"], about: ["About", "عنّي"], work: ["Work", "العمل"], lost: ["Not found", "غير موجودة"] };
+  const PAGE = { notes: ["Thoughts", "خواطر"], shelf: ["The shelf", "الرف"], about: ["About", "عنّي"], work: ["Work", "العمل"], lost: ["Not found", "الصفحة غير موجودة"] };
   // the tab's title for a key (a thought or a build can pass its own name)
   function title(key, own, l = lang()) {
     const ar = l === "ar", nm = ar ? NAME_AR : NAME, p = key == null ? "lost" : key.split("/")[0];
