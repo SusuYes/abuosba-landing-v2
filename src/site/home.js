@@ -162,12 +162,14 @@
   { const t = $("#note-body"); if (t) bodies[t.dataset.slug] = t.innerHTML; }
   const firstDrop = (h) => h.replace(/^\s*<p>/, '<p class="drop">');
   const noteBody = (id) => (id in bodies ? firstDrop(bodies[id]) : null);
+  const asked = new Set();
   function fetchBody(id) {
+    if (asked.has(id)) return; asked.add(id);
     fetch(ROUTE.href("note/" + id, NOTES[id].lang)).then((r) => r.text()).then((h) => {
       const t = new DOMParser().parseFromString(h, "text/html").querySelector("#note-body");
       bodies[id] = t ? t.innerHTML : "";
       const nb = $(`.nb[data-nb="${id}"]`); if (nb) nb.innerHTML = noteBody(id);
-    }).catch(() => {});
+    }).catch(() => asked.delete(id));
   }
   /* Suhail, the star, from where the visitor is: one line, in both languages (data-ar carries the Arabic) */
   function suhailLine() {
@@ -189,7 +191,11 @@
       return [`Thoughts<b>خواطر</b>`, `<p class="when">${n.kind} · ${n.mins} min read · ${n.date || "soon"}</p><h1>${n.title}</h1><p class="dek">${n.dek}</p><div class="nb" data-nb="${id}" data-i18n-skip>${noteBody(id) || ""}</div>
         <p class="fin" aria-hidden="true">✦</p>
         ${pn}
-        <a class="r-all" href="${ROUTE.href("notes")}" data-open="notes">All thoughts →</a>`, () => noteBody(id) == null && fetchBody(id), "notes"];
+        <a class="r-all" href="${ROUTE.href("notes")}" data-open="notes">All thoughts →</a>`, () => {
+        const nb = $(`.nb[data-nb="${id}"]`); if (nb && !nb.innerHTML.trim() && noteBody(id) != null) nb.innerHTML = noteBody(id); // words that came while the page was turning
+        // its version in the other language is read ahead, so a switch of language has the words ready to ink in
+        for (const x of [id, n.pair]) if (x && NOTES[x] && noteBody(x) == null) fetchBody(x);
+      }, "notes"];
     },
     notes() {
       const es = NO.filter((id) => NOTES[id].kind === "Essay").length;
@@ -244,16 +250,35 @@
         <nav aria-label="Pages"><a href="${ROUTE.href("")}" data-home>Tonight</a><a href="${ROUTE.href("notes")}" data-open="notes">Thoughts</a><a href="${ROUTE.href("shelf")}" data-open="shelf">The shelf</a><a href="${ROUTE.href("about")}" data-open="about">About</a><button type="button" data-work>The work</button></nav></div>`, null, ""];
     },
   };
-  function open(key, el) {
+  // now: swap the words in place with no fade of its own (a change of language brings its own animation)
+  function open(key, el, now) {
     const [p, arg] = key.split("/"); if (!PAGES[p] || p === "lost" || (p === "note" && !NO.includes(arg))) return false;
-    return show(PAGES[p](arg), el, p === "note");
+    if (p === "note" && noteBody(arg) == null) fetchBody(arg); // asked for now, so the words are there when the page has grown
+    return show(PAGES[p](arg), el, p === "note", now);
   }
-  function show([k, html, after, pg, wide], el, isNote) {
-    $("#r-k").innerHTML = k; const inn = $("#r-in"); inn.innerHTML = html; inn.classList.toggle("wide", !!wide); reader.scrollTop = 0;
-    reader.classList.toggle("is-note", !!isNote); reader.style.setProperty("--p", 0);
+  /* moving between pages with the reader already open (the list to a thought, one thought to the next): the old
+     page fades up and away, the reader goes back to the top, and the new one rises in, as it does on first opening */
+  let turn = 0;
+  function show([k, html, after, pg, wide], el, isNote, now) {
+    const on = reader.classList.contains("on"), inn = $("#r-in"), t = ++turn;
+    const fill = () => {
+      if (t !== turn) return;
+      $("#r-k").innerHTML = k; inn.innerHTML = html; inn.classList.toggle("wide", !!wide); reader.scrollTop = 0;
+      reader.classList.toggle("is-note", !!isNote); reader.style.setProperty("--p", 0);
+      if (after) setTimeout(after, on ? 0 : 450);
+    };
     $$(".r-nav [data-pg]").forEach((a) => (a.dataset.pg === pg ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current")));
-    if (after) setTimeout(after, reader.classList.contains("on") ? 0 : 450);
-    if (!reader.classList.contains("on")) { from = el || car.children[0]; rect(from); reader.getBoundingClientRect(); }
+    inn.getAnimations().forEach((a) => a.cancel());
+    if (on && !now && !REDUCE) {
+      inn.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: "translateY(-8px)" }], { duration: 200, easing: "ease-in", fill: "forwards" })
+        .finished.then(() => { if (t !== turn) return; fill(); inn.getAnimations().forEach((a) => a.cancel());
+          inn.animate([{ opacity: 0, transform: "translateY(10px)" }, { opacity: 1, transform: "none" }], { duration: 480, easing: "cubic-bezier(.2,.7,.2,1)" }); })
+        .catch(() => {});
+    } else fill();
+    if (!on) {
+      // the reader grows out of what was tapped: it is put there with no transition, or it would grow from wherever it last was
+      from = el || car.children[0]; reader.style.transition = "none"; rect(from); reader.getBoundingClientRect(); reader.style.transition = "";
+    }
     reader.classList.add("on"); body.classList.add("reading"); return true;
   }
   const lost = (h) => show(PAGES.lost(h), null, false);
@@ -337,7 +362,7 @@
     if (key != null) {
       const [p, arg] = key.split("/");
       if (p === "note" && !(NOTES[arg] && NOTES[arg].lang === ROUTE.lang())) { const pr = NOTES[arg] && NOTES[arg].pair; key = pr && NOTES[pr] && NOTES[pr].lang === ROUTE.lang() ? "note/" + pr : "notes"; }
-      if (reader.classList.contains("on") && ["note", "notes", "about"].includes(p)) open(key);
+      if (reader.classList.contains("on") && ["note", "notes", "about"].includes(p)) open(key, null, true);
       history.replaceState(history.state, "", ROUTE.href(key) + location.search);
     } else {
       const ar = ROUTE.lang() === "ar", path = location.pathname.replace(/^\/ar(\/|$)/, "/");
