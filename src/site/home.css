@@ -186,6 +186,22 @@ html[dir="rtl"] .sh-tabs i { left: auto; right: 0; translate: calc(var(--x, 0) *
 .reader p { margin-top: 18px; font-size: 19px; line-height: 1.65; }
 .reader .dim { color: #cfc8bb; }
 .reader .drop::first-letter { float: left; font: 700 62px/.82 var(--serif); color: var(--a); margin: 6px 10px 0 0; }
+/* Arabic letters join, so a dropped first letter would break the first word apart */
+html[lang="ar"] .reader .drop::first-letter { float: none; font: inherit; color: inherit; margin: 0; }
+/* a thought's sources: Markdown footnotes ([^1]) become a raised number in the text and a numbered list at the end */
+.reader .nb sup { font-size: .68em; line-height: 0; vertical-align: super; }
+.reader .nb sup a { color: var(--a); text-decoration: none; padding: 0 1px; }
+.reader .nb sup a:hover { text-decoration: underline; }
+.reader .nb .footnotes { margin-top: 30px; padding-top: 16px; border-top: 1px solid var(--line); font-size: .86em; color: var(--m); }
+.reader .nb .footnotes::before { content: "Sources"; display: block; margin-bottom: 10px; font: 500 10.5px var(--caps); letter-spacing: .2em; text-transform: uppercase; }
+html[lang="ar"] .reader .nb .footnotes::before { content: "المصادر"; font-size: 13px; font-weight: 600; letter-spacing: 0; }
+.reader .nb .footnotes .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.reader .nb .footnotes ol { list-style: decimal; margin: 0; padding-inline-start: 1.4em; }
+.reader .nb .footnotes li { margin: 0 0 8px; padding-inline-start: 4px; }
+.reader .nb .footnotes li::marker { color: var(--a); }
+.reader .nb .footnotes p { margin: 0; }
+.reader .nb .footnotes [data-footnote-backref] { text-decoration: none; margin-inline-start: 4px; }
+html[lang="ar"] .reader .nb .footnotes ol { list-style: arabic-indic; }
 .reader .next { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--line); text-decoration: none; }
 .reader .next span { font: 500 11px var(--caps); letter-spacing: .2em; text-transform: uppercase; color: var(--m); }
 .reader .next b { font: 500 21px var(--serif); text-align: right; } .reader .next:hover b { color: var(--a); }

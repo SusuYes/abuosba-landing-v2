@@ -336,7 +336,7 @@
     let { key } = ROUTE.parse();
     if (key != null) {
       const [p, arg] = key.split("/");
-      if (p === "note") { const pr = NOTES[arg] && NOTES[arg].pair; key = pr && NOTES[pr] && NOTES[pr].lang === ROUTE.lang() ? "note/" + pr : "notes"; }
+      if (p === "note" && !(NOTES[arg] && NOTES[arg].lang === ROUTE.lang())) { const pr = NOTES[arg] && NOTES[arg].pair; key = pr && NOTES[pr] && NOTES[pr].lang === ROUTE.lang() ? "note/" + pr : "notes"; }
       if (reader.classList.contains("on") && ["note", "notes", "about"].includes(p)) open(key);
       history.replaceState(history.state, "", ROUTE.href(key) + location.search);
     } else {
