@@ -1,0 +1,17 @@
+---
+/* The sources listed in a thought's properties, under its words. It wears the footnotes' look (src/site/home.css),
+   which titles it "Sources" / "المصادر"; [n] in the text links here (src/lib/remark-sources.mjs). */
+interface Props { sources: { title: string; url?: string; note?: string }[] }
+const { sources } = Astro.props;
+---
+{sources.length > 0 && (
+  <section class="footnotes sources">
+    <ol>
+      {sources.map((s, i) => (
+        <li id={`source-${i + 1}`}>
+          <p>{s.url ? <a href={s.url} rel="noopener">{s.title}</a> : s.title}{s.note && <>. {s.note}</>}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+)}

@@ -4,8 +4,6 @@ publish: true
 date: 2026-10-16
 dek: Who decides what is private, and why does the line keep moving?
 kind: Essay
-lang: en
-pair: where-the-line-sits-ar
 type: essay
 tags:
   - personal

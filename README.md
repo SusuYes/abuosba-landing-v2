@@ -54,11 +54,20 @@ If the Worker is ever down, a GitHub token works as well:
 2. Repository access: only `SusuYes/abuosba-landing-v2`. Permissions: Contents, read and write.
 3. Copy the token, open `/admin/`, choose "Sign In Using Access Token" and paste it. The browser remembers it.
 
-A thought is a draft until "Live on the site" is on; saving with it on publishes it. Images added in the editor go
-to `public/media/thoughts/`. The fields are set in `public/admin/config.yml`, and the Sveltia version is pinned in
-`public/admin/index.html`.
+Each thought is one entry with English and Arabic side by side. Write one side, then press the translate button on
+the other (the first time, pick a service, such as Anthropic Claude, and paste its API key; the browser keeps it).
+Read the translation over before saving. A thought written only in English can switch its Arabic side off from that
+side's menu. Each language has its own "Live on the site" switch; saving with it on publishes that language.
 
-The files look like this (Obsidian can still open them, and an edited file can still be committed by hand):
+Sources go in the Sources list under the body, and the same list is used for both languages. In the text, `[1]`, `[2]`
+point at them: on the site they become raised numbers linking to the list, which shows under the thought as
+"Sources" / "المصادر". Markdown footnotes (`[^1]`) still work too.
+
+Images added in the editor go to `public/media/thoughts/`. The fields are set in `public/admin/config.yml`, and the
+Sveltia version is pinned in `public/admin/index.html`.
+
+The files are `src/content/thoughts/en/<slug>.md` and `src/content/thoughts/ar/<slug>.md` (Obsidian can still open
+them, and an edited file can still be committed by hand):
 
 ```yaml
 ---
@@ -67,14 +76,18 @@ publish: true          # off, or missing, keeps it off the site (Publish works t
 date: 2026-10-01       # newest first
 dek: Why the star I'm named for rises late in summer.
 kind: Essay            # or Note (the default)
-lang: en               # ar for a thought written in Arabic; the Arabic site shows only these
 excerpt: ...           # optional; otherwise the first paragraph
-pair: other-slug       # optional: the same thought in the other language
+sources:               # optional; [1] in the text points at the first
+  - title: Warren and Brandeis, The Right to Privacy (1890)
+    url: https://example.com
+    note: optional
 ---
 ```
 
-The address is the file name (`reading-the-sky.md` becomes `/thoughts/reading-the-sky/`). Wiki links (`[[...]]`)
-and embeds are not turned into links; use ordinary Markdown links. Footnotes (`[^1]`) work.
+The address is the file name: `en/reading-the-sky.md` is `/thoughts/reading-the-sky/`, and `ar/reading-the-sky.md`
+is `/ar/thoughts/reading-the-sky-ar/`; the two are linked as each other's language. The Arabic site shows only
+Arabic thoughts. Wiki links (`[[...]]`) and embeds are not turned into links; use ordinary Markdown links. A file
+directly in `src/content/thoughts/` (or from a vault) still works with `lang: ar` and `pair: other-slug`.
 
 ### Building from a vault repo instead
 
