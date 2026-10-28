@@ -42,7 +42,13 @@ Thoughts are written in the browser at [abuosba.com/admin/](https://abuosba.com/
 Markdown files in `src/content/thoughts/` through GitHub: each save is a commit to `main`, and the deploy workflow
 publishes it a minute or two later. There is no server or database.
 
-Signing in takes a GitHub token, once per browser:
+Sign in with **Sign In with GitHub**, once per browser. That button goes through a small Cloudflare Worker,
+`sveltia-cms-auth` on Suhail's Cloudflare account ([source](https://github.com/sveltia/sveltia-cms-auth)), at
+`https://sveltia-cms-auth.suhail-f28.workers.dev`. It holds a GitHub OAuth app's keys as the secrets
+`GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET`, and `ALLOWED_DOMAINS` (`abuosba.com`) so no other site can use it. The
+OAuth app's callback is the Worker's address plus `/callback`.
+
+If the Worker is ever down, a GitHub token works as well:
 
 1. GitHub, Settings, Developer settings, [Fine-grained tokens](https://github.com/settings/personal-access-tokens/new).
 2. Repository access: only `SusuYes/abuosba-landing-v2`. Permissions: Contents, read and write.
