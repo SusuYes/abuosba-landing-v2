@@ -8,6 +8,36 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body>
+    <script>
+      // Translate goes through the abuosba-translate Worker, which holds the
+      // Anthropic key as a Cloudflare secret, so no key is typed or kept here.
+      (() => {
+        const ANTHROPIC = 'https://api.anthropic.com/v1/messages';
+        const WORKER = 'https://abuosba-translate.suhail-f28.workers.dev';
+        // A stand-in that passes the portal's key check; the Worker ignores it.
+        const STAND_IN = 'sk-ant-site-key-kept-on-cloudflare-not-in-this-browser';
+        try {
+          const prefs = JSON.parse(localStorage.getItem('sveltia-cms.prefs') || '{}') || {};
+          prefs.apiKeys = { ...prefs.apiKeys, anthropic: STAND_IN };
+          if (!prefs.defaultTranslationService || prefs.defaultTranslationService === 'google') {
+            prefs.defaultTranslationService = 'anthropic';
+          }
+          localStorage.setItem('sveltia-cms.prefs', JSON.stringify(prefs));
+        } catch {}
+        const send = window.fetch.bind(window);
+        window.fetch = (input, init = {}) => {
+          if (input !== ANTHROPIC) return send(input, init);
+          const headers = new Headers(init.headers);
+          headers.delete('x-api-key');
+          headers.delete('anthropic-dangerous-direct-browser-access');
+          try {
+            const { token } = JSON.parse(localStorage.getItem('sveltia-cms.user') || '{}') || {};
+            if (token) headers.set('Authorization', `Bearer ${token}`);
+          } catch {}
+          return send(WORKER, { ...init, headers });
+        };
+      })();
+    </script>
     <!-- Sveltia CMS reads config.yml next to this page. Pinned: bump the version on purpose, not by accident. -->
     <script src="https://unpkg.com/@sveltia/cms@0.235.1/dist/sveltia-cms.js"></script>
   </body>

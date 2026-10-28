@@ -1,0 +1,2 @@
+# Your Anthropic API key (from platform.claude.com/settings/keys). Stored as an encrypted Worker secret.
+ANTHROPIC_API_KEY=
