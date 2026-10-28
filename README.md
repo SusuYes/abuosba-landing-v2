@@ -35,14 +35,29 @@ own); Thoughts, a thought, The shelf and About open over it; Work is reached by 
 - The builds on Work are in `src/site/common.js` (`CASES`) and `src/lib/site.ts` (`BUILDS`, for titles).
 - Anything in square brackets is a placeholder still to be written, and shows with a dotted gold underline.
 
-## Thoughts come from the vault
+## Writing thoughts at /admin/
 
-Thoughts are Markdown notes in the Obsidian vault. A note is published when it has these properties:
+Thoughts are written in the browser at [abuosba.com/admin/](https://abuosba.com/admin/), on a phone or a computer. It is
+[Sveltia CMS](https://github.com/sveltia/sveltia-cms) (`public/admin/`), a single page that reads and writes the
+Markdown files in `src/content/thoughts/` through GitHub: each save is a commit to `main`, and the deploy workflow
+publishes it a minute or two later. There is no server or database.
+
+Signing in takes a GitHub token, once per browser:
+
+1. GitHub, Settings, Developer settings, [Fine-grained tokens](https://github.com/settings/personal-access-tokens/new).
+2. Repository access: only `SusuYes/abuosba-landing-v2`. Permissions: Contents, read and write.
+3. Copy the token, open `/admin/`, choose "Sign In Using Access Token" and paste it. The browser remembers it.
+
+A thought is a draft until "Live on the site" is on; saving with it on publishes it. Images added in the editor go
+to `public/media/thoughts/`. The fields are set in `public/admin/config.yml`, and the Sveltia version is pinned in
+`public/admin/index.html`.
+
+The files look like this (Obsidian can still open them, and an edited file can still be committed by hand):
 
 ```yaml
 ---
 title: Reading the sky from Sana'a
-Publish: true          # off, or missing, keeps it off the site
+publish: true          # off, or missing, keeps it off the site (Publish works too)
 date: 2026-10-01       # newest first
 dek: Why the star I'm named for rises late in summer.
 kind: Essay            # or Note (the default)
@@ -52,15 +67,17 @@ pair: other-slug       # optional: the same thought in the other language
 ---
 ```
 
-The address is the file name, lower-cased with dashes (`Reading the sky.md` becomes `/thoughts/reading-the-sky/`).
-Wiki links (`[[...]]`) and embeds are not turned into links yet; use ordinary Markdown links.
+The address is the file name (`reading-the-sky.md` becomes `/thoughts/reading-the-sky/`). Wiki links (`[[...]]`)
+and embeds are not turned into links; use ordinary Markdown links. Footnotes (`[^1]`) work.
 
-Without the vault, the build reads `src/content/thoughts/`, which is empty: the site then says nothing is written yet. To build from
-the vault's private repo, set in this repo's settings:
+### Building from a vault repo instead
+
+The workflow can still build Thoughts from a private vault repo, but then it reads only that repo and ignores
+`src/content/thoughts/`, so anything written at `/admin/` would not show. Leave these unset while using `/admin/`:
 
 - variable `THOUGHTS_REPO`: the vault repo, as `owner/name`
 - variable `THOUGHTS_PATH`: the posts folder inside it
 - secret `THOUGHTS_TOKEN`: a fine-grained token with read access to that repo's contents
 
-To publish when a thought changes, the vault repo can send a `repository_dispatch` of type `thoughts` to this repo.
-Locally, `THOUGHTS_DIR=/path/to/vault/posts npm run build` builds from a folder on disk.
+The vault repo can send a `repository_dispatch` of type `thoughts` to rebuild. Locally,
+`THOUGHTS_DIR=/path/to/posts npm run build` builds from a folder on disk.
