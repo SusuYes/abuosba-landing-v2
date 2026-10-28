@@ -1,9 +1,9 @@
 ---
 /* Every address on the site, in English and under /ar/ in Arabic. Each is the same document (Shell) opened at its
    place; a thought's page also carries the thought's words, which the page script shows. */
-import { render } from "astro:content";
 import Shell from "../layouts/Shell.astro";
-import { published, summary, type Thought } from "../lib/thoughts";
+import Sources from "../components/Sources.astro";
+import { bodyHTML, published, summary, type Thought } from "../lib/thoughts";
 import { BUILDS, href, description, type Lang } from "../lib/site";
 
 export async function getStaticPaths() {
@@ -27,21 +27,21 @@ export async function getStaticPaths() {
 interface Props { lang: Lang; key: string; other?: string; own?: string; thought?: Thought }
 const { lang, key, other, own, thought } = Astro.props;
 const ar = lang === "ar";
-const Body = thought ? (await render(thought)).Content : null;
 const list = (await published()).filter((p) => p.data.lang === lang);
 const t = (en: string, arabic: string) => (ar ? arabic : en);
 const page = key.split("/")[0];
 ---
 <Shell lang={lang} key={key} other={other} own={own} dek={thought?.data.dek}>
-  {thought && Body && <template id="note-body" data-slug={thought.id}><Body /></template>}
+  {thought && <template id="note-body" data-slug={thought.id}><Fragment set:html={bodyHTML(thought)} /><Sources sources={thought.data.sources} /></template>}
   <Fragment slot="noscript">
     <nav><a href={href("", lang)}>{t("Tonight", "الليلة")}</a> · <a href={href("notes", lang)}>{t("Thoughts", "خواطر")}</a> · <a href={href("shelf", lang)}>{t("The shelf", "الرف")}</a> · <a href={href("about", lang)}>{t("About", "عنّي")}</a> · <a href={href("work", lang)}>{t("The work", "العمل")}</a></nav>
-    {thought && Body ? (
+    {thought ? (
       <article>
         <p>{summary(thought).kind}</p>
         <h1>{thought.data.title}</h1>
         <p><em>{thought.data.dek}</em></p>
-        <Body />
+        <Fragment set:html={bodyHTML(thought)} />
+        <Sources sources={thought.data.sources} />
       </article>
     ) : (
       <>

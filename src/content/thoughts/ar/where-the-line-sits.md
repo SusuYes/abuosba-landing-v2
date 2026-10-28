@@ -4,8 +4,6 @@ publish: true
 date: 2026-10-16
 dek: من يقرّر ما هو خاصّ، ولماذا يظلّ الخطّ يتحرّك؟
 kind: Essay
-lang: ar
-pair: where-the-line-sits
 type: essay
 tags:
   - personal

@@ -29,23 +29,32 @@ output:
 media_folder: public/media/thoughts
 public_folder: /media/thoughts
 
+# English and Arabic sit side by side in one entry: en/<slug>.md and ar/<slug>.md, paired by the site. The Arabic
+# side can be switched off for a thought written only in English. Translate fills one side from the other (set up
+# once per browser: Settings, Languages, translation service and its key).
+i18n:
+  structure: multiple_folders
+  locales: [en, ar]
+  default_locale: en
+  initial_locales: all
+
 collections:
   - name: thoughts
     label: Thoughts
     label_singular: Thought
-    description: Essays and notes. A thought shows on the site only when “Live on the site” is on.
+    description: Essays and notes, in English and Arabic. Each language goes live when its own “Live on the site” is on.
     folder: src/content/thoughts
     create: true
     format: frontmatter
     extension: md
-    # the file name is the address: /thoughts/<slug>/ (the Arabic one of a pair ends in -ar by habit)
+    i18n: true
+    # the file name is the address: /thoughts/<slug>/, and /ar/thoughts/<slug>-ar/ for the Arabic
     slug:
       template: "{{title}}"
       editable: [create]
-      hint: The address, /thoughts/<this>/. It can’t change once saved. For an Arabic thought, use the English slug plus -ar.
+      hint: The address, /thoughts/<this>/. It can’t change once saved.
       pattern: ["^[a-z0-9]+(-[a-z0-9]+)*$", "Lower-case letters, numbers and dashes only"]
     aliases_field: false
-    preview_path: "/thoughts/{{slug}}/"
     summary: "{{title}} · {{date | date('YYYY-MM-DD')}}{{publish | ternary('', ' · draft')}}"
     sortable_fields:
       default:
@@ -55,40 +64,37 @@ collections:
     view_filters:
       - { label: Live, field: publish, pattern: true }
       - { label: Drafts, field: publish, pattern: false }
-      - { label: English, field: lang, pattern: en }
-      - { label: Arabic, field: lang, pattern: ar }
     fields:
-      - { name: title, label: Title, widget: string }
+      - { name: title, label: Title, widget: string, i18n: true }
+      - { name: dek, label: Dek, hint: One line under the title., widget: string, required: false, i18n: true }
+      - name: body
+        label: Body
+        hint: To cite a source, type its number from the list below in brackets, like [1].
+        widget: markdown
+        i18n: true
+      - name: sources
+        label: Sources
+        label_singular: Source
+        hint: Shown under the thought, numbered in this order. The same list is used for both languages.
+        widget: list
+        required: false
+        i18n: duplicate
+        summary: "{{fields.title}}"
+        fields:
+          - { name: title, label: Title, hint: "What it is, e.g. Warren and Brandeis, The Right to Privacy (1890)", widget: string }
+          - { name: url, label: Link, widget: string, required: false }
+          - { name: note, label: Note, hint: "Optional, e.g. a page or what it shows.", widget: string, required: false }
       - name: publish
         label: Live on the site
-        hint: Off keeps it a draft. Saving with this on publishes it.
+        hint: Off keeps this language a draft. Saving with it on publishes it.
         widget: boolean
         default: false
-      - { name: date, label: Date, widget: datetime, type: date, format: YYYY-MM-DD, default: "{{now}}" }
-      - { name: dek, label: Dek, hint: One line under the title., widget: string, required: false }
-      - name: kind
-        label: Kind
-        widget: select
-        options: [Essay, Note]
-        default: Note
-      - name: lang
-        label: Language
-        hint: Arabic thoughts show only on the Arabic site.
-        widget: select
-        options: [{ label: English, value: en }, { label: العربية, value: ar }]
-        default: en
-      - name: pair
-        label: Same thought in the other language
-        widget: relation
-        collection: thoughts
-        value_field: "{{slug}}"
-        search_fields: [title]
-        display_fields: [title]
-        required: false
+        i18n: true
+      - { name: date, label: Date, widget: datetime, type: date, format: YYYY-MM-DD, default: "{{now}}", i18n: duplicate }
+      - { name: kind, label: Kind, widget: select, options: [Essay, Note], default: Note, i18n: duplicate }
       - name: excerpt
         label: Excerpt
         hint: Optional. The cards use the first paragraph without it.
         widget: text
         required: false
-      - { name: tags, label: Tags, widget: list, required: false }
-      - { name: body, label: Body, widget: markdown }
+        i18n: true
