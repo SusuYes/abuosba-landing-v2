@@ -1,11 +1,15 @@
 # The writing portal at /admin/ (Sveltia CMS). Each save is a commit to main, which the deploy workflow
 # publishes, so a thought is live a minute or two after it is saved with "Live on the site" on.
-# Sign in with a GitHub token (see the README); no server or database is involved.
+# Sign in with GitHub goes through a small Cloudflare Worker (sveltia-cms-auth on Suhail's Cloudflare account) that
+# trades GitHub's sign-in code for a token; a pasted GitHub token still works too. See the README.
 backend:
   name: github
   repo: SusuYes/abuosba-landing-v2
   branch: main
-  auth_methods: [token]
+  base_url: https://sveltia-cms-auth.suhail-f28.workers.dev
+  # the repo is public, so the sign-in only needs access to public repos
+  auth_scope: public_repo
+  auth_methods: [oauth, token]
   commit_messages:
     create: "Write “{{slug}}”"
     update: "Edit “{{slug}}”"
