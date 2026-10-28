@@ -55,9 +55,14 @@ If the Worker is ever down, a GitHub token works as well:
 3. Copy the token, open `/admin/`, choose "Sign In Using Access Token" and paste it. The browser remembers it.
 
 Each thought is one entry with English and Arabic side by side. Write one side, then press the translate button on
-the other (the first time, pick a service, such as Anthropic Claude, and paste its API key; the browser keeps it).
-Read the translation over before saving. A thought written only in English can switch its Arabic side off from that
+the other. Read the translation over before saving. A thought written only in English can switch its Arabic side off from that
 side's menu. Each language has its own "Live on the site" switch; saving with it on publishes that language.
+
+Translate needs no key in the browser. The portal sends it to the `abuosba-translate` Cloudflare Worker
+(`workers/translate/`), which holds the Anthropic key as the secret `ANTHROPIC_API_KEY`, only answers abuosba.com, and
+only for someone signed in with push access to this repo. It translates with Claude Sonnet (falling back to Haiku).
+To change the key, edit that secret in Cloudflare (Workers & Pages, abuosba-translate, Settings, Variables and
+Secrets). Never put the key in this repo: it is public.
 
 Sources go in the Sources list under the body, and the same list is used for both languages. In the text, `[1]`, `[2]`
 point at them: on the site they become raised numbers linking to the list, which shows under the thought as
