@@ -60,7 +60,9 @@ side's menu. Each language has its own "Live on the site" switch; saving with it
 
 Translate needs no key in the browser. The portal sends it to the `abuosba-translate` Cloudflare Worker
 (`workers/translate/`), which holds the Anthropic key as the secret `ANTHROPIC_API_KEY`, only answers abuosba.com, and
-only for someone signed in with push access to this repo. It translates with Claude Sonnet (falling back to Haiku).
+only for someone signed in with push access to this repo. It translates with Claude Sonnet (falling back to Haiku), and `public/admin/index.html` puts a voice brief in front of
+the portal's prompt so translations are rewritten natively (wise, concise, clear, deep) rather than word for word. Edit
+that `VOICE` text to change the tone.
 To change the key, edit that secret in Cloudflare (Workers & Pages, abuosba-translate, Settings, Variables and
 Secrets). Never put the key in this repo: it is public.
 

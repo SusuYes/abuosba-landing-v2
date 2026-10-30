@@ -24,6 +24,40 @@
           }
           localStorage.setItem('sveltia-cms.prefs', JSON.stringify(prefs));
         } catch {}
+        // The portal's own prompt asks for a "professional translator", which reads
+        // word for word. This brief comes first and sets the voice; the portal's
+        // rules after it (keep Markdown, answer in JSON) still apply.
+        const VOICE = [
+          'You are not a literal translator. These are essays and notes by Suhail Abu Osba for abuosba.com.',
+          'Write each text the way Suhail would have written it in the target language from the start:',
+          'the same thought, the same order of ideas, in prose native to that language.',
+          '',
+          'Voice: wise, concise, clear and deep.',
+          '- Say it in fewer, weightier words. Short sentences that carry meaning; no filler, no hedging.',
+          '- Plain words over ornate ones. One precise image beats three decorative ones.',
+          '- Keep the thinking exploratory: do not add conclusions, morals, explanations or ideas that are',
+          '  not in the source, and do not drop any. Depth comes from precision, not from adding.',
+          '- Titles stay short and resonant, never explanatory.',
+          '',
+          'Into Arabic: Modern Standard Arabic in a literary register, with the cadence of good Arabic',
+          'essay prose and a quiet poetic touch. Rebuild sentences the Arabic way instead of mirroring',
+          'English syntax; use an Arabic idiom where one truly fits; avoid stiff, bureaucratic or',
+          'translated-sounding phrasing. Arabic punctuation (، ؛ ؟). Diacritics only where a word would',
+          'otherwise be misread.',
+          'Into English: plain, warm, exact prose with the same restraint. No clichés.',
+          '',
+          'Keep every citation marker like [1] or [^1] attached to the same claim, and keep the same',
+          'paragraphs.',
+        ].join('\n');
+        const voiced = (body) => {
+          try {
+            const data = JSON.parse(body);
+            data.system = `${VOICE}\n\n${String(data.system || '').replace(/^You are a professional translator\.\s*/, '')}`;
+            return JSON.stringify(data);
+          } catch {
+            return body;
+          }
+        };
         const send = window.fetch.bind(window);
         window.fetch = (input, init = {}) => {
           if (input !== ANTHROPIC) return send(input, init);
@@ -34,7 +68,7 @@
             const { token } = JSON.parse(localStorage.getItem('sveltia-cms.user') || '{}') || {};
             if (token) headers.set('Authorization', `Bearer ${token}`);
           } catch {}
-          return send(WORKER, { ...init, headers });
+          return send(WORKER, { ...init, headers, body: voiced(init.body) });
         };
       })();
     </script>
