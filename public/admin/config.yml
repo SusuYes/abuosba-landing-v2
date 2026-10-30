@@ -7,8 +7,8 @@ backend:
   repo: SusuYes/abuosba-landing-v2
   branch: main
   base_url: https://sveltia-cms-auth.suhail-f28.workers.dev
-  # the repo is public, so the sign-in only needs access to public repos
-  auth_scope: public_repo
+  # the repo is private, so the sign-in needs GitHub's `repo` scope to read and write it
+  auth_scope: repo
   auth_methods: [oauth, token]
   commit_messages:
     create: "Write “{{slug}}”"
